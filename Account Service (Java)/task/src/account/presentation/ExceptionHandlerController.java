@@ -29,9 +29,9 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
         body.put("timestamp", LocalDateTime.now());
         body.put("status", status.value());
         body.put("error", HttpStatus.valueOf(status.value()).getReasonPhrase());
-        body.put("message", "Error");
+        body.put("message", ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
         body.put("path", request.getDescription(false).substring(4));
-        LOGGER.info(ex.getMessage() + ex.getLocalizedMessage());
+        LOGGER.info(ex.getBindingResult().getAllErrors().get(0).getDefaultMessage());
 
         return new ResponseEntity<>(body, status);
     }

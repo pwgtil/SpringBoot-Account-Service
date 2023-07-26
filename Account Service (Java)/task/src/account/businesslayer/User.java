@@ -47,6 +47,10 @@ public class User implements UserDetails {
     /*
      * Getters, Setters
      * */
+    public void setID(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

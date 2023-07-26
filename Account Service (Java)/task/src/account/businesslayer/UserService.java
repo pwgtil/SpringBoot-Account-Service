@@ -20,11 +20,14 @@ public class UserService implements UserDetailsService {
     }
 
     public User save(User userInput) {
-        if (userRepository.findUserByEmailIgnoreCase(userInput.getEmail()) == null) {
+        User dbUser = userRepository.findUserByEmailIgnoreCase(userInput.getEmail());
+        if (dbUser == null) {
             User user = userRepository.save(userInput);
             return user;
         } else {
-            return null;
+            userInput.setID(dbUser.getId());
+            User user = userRepository.save(userInput);
+            return user;
         }
     }
 

@@ -1,6 +1,7 @@
-package account.configuration;
+package account.security;
 
 import account.businesslayer.UserService;
+import account.presentation.routing.ChangePass;
 import account.presentation.routing.Payment;
 import account.presentation.routing.Signup;
 import jakarta.validation.constraints.NotNull;
@@ -25,15 +26,16 @@ public class WebSecurityConfig {
 
     UserDetailsService userService;
 
-    public void configure(@Autowired @NotNull AuthenticationManagerBuilder auth, @Autowired PasswordEncoder encoder) throws Exception {
+    public void configure(@Autowired @NotNull AuthenticationManagerBuilder auth, @Autowired PasswordService passwordService) throws Exception {
         auth
                 .userDetailsService(userService)
-                .passwordEncoder(encoder)
+                .passwordEncoder(passwordService.getPasswordEncoder())
                 .and()
 
                 .inMemoryAuthentication()
                 .withUser("admin").password("admin").roles("ADMIN");
                 //.and().passwordEncoder(NoOpPasswordEncoder.getInstance());
+
     }
 
     @Bean
@@ -48,19 +50,13 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, Signup.PATH).permitAll()
                         .requestMatchers(toH2Console()).permitAll()
                         .requestMatchers("/actuator/shutdown").permitAll()
-                        .requestMatchers(Payment.PATH).authenticated()
+                        .requestMatchers(Payment.PATH, ChangePass.PATH).authenticated()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().denyAll())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .build();
-    }
-
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
     }
 
     public WebSecurityConfig(@Autowired UserService userService) {
