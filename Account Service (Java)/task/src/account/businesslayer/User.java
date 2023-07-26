@@ -10,6 +10,9 @@ import java.util.Collection;
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
+    /*
+     * Properties
+     * */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,6 +29,9 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
+    /*
+     * Constructors
+     * */
     public User(String name, String lastname, String email, String password) {
         this.name = name;
         this.lastname = lastname;
@@ -37,42 +43,50 @@ public class User implements UserDetails {
 
     }
 
+
+    /*
+     * Getters, Setters
+     * */
+    public Long getId() {
+        return id;
+    }
+
     public void setEmail(String email) {
-            this.email = email;
-    }
-
-    public void setName(String name) {
-            this.name = name;
-    }
-
-    public void setLastname(String lastname) {
-            this.lastname = lastname;
-    }
-
-    public void setPassword(String password) {
-            this.password = password;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLastname() {
-        return lastname;
+        this.email = email;
     }
 
     public String getEmail() {
         return email;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return null;
     }
 
     @Override
@@ -100,7 +114,8 @@ public class User implements UserDetails {
         return true;
     }
 
-    public Long getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", name='" + name + '\'' + ", lastname='" + lastname + '\'' + ", password='" + password + '\'' + ", email='" + email + '\'' + '}';
     }
 }

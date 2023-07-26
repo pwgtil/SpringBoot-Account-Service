@@ -4,31 +4,46 @@ import account.businesslayer.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 public class UserDTO {
 
+    /*
+     * Static method (convertor)
+     * */
     static public UserDTO convertUserToDTO(User user) {
         if (user != null) {
             return new UserDTO(user.getId(), user.getName(), user.getLastname(), user.getEmail());
         } else return null;
     }
 
+    /*
+     * Properties
+     * */
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private Long id;
 
-//    @NotEmpty(message = "Name cannot be blank")
+    @NotEmpty
+    @NotNull
     private String name;
 
-//    @NotEmpty(message = "Lastname cannot be blank")
+    @NotEmpty
+    @NotNull
     private String lastname;
 
-//    @Email(regexp = "[\\w.]+(@acme.com)", message = "Email wrong format")
+    @NotEmpty
+    @NotNull
+    @Email(regexp = "[\\w.]+(@acme.com)")
     private String email;
 
+    @NotEmpty
+    @NotNull
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-//    @NotEmpty(message = "Password cannot be empty")
     private String password;
 
+    /*
+     * Constructors
+     * */
     public UserDTO(Long id, String name, String lastname, String email) {
         this.id = id;
         this.name = name;
@@ -39,6 +54,9 @@ public class UserDTO {
     public UserDTO() {
     }
 
+    /*
+     * Getters, Setters, Convertors
+     * */
     public User convertDTOToUser() {
         return new User(this.getName(), this.getLastname(), this.getEmail().toLowerCase(), this.getPassword());
     }
@@ -63,11 +81,13 @@ public class UserDTO {
         this.password = password;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
+    @Override
+    public String toString() {
+        return "{" +
+                "\"id\":\"" + id + "\"" +
+                "\"name\":\"" + name + "\"" +
+                ", \"lastname\":\"" + lastname + "\"" +
+                ", \"email\":\"" + email + "\"" +
+                "}";
     }
 }
