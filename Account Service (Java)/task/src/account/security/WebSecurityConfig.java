@@ -3,6 +3,7 @@ package account.security;
 import account.businesslayer.UserService;
 import account.presentation.routing.ChangePass;
 import account.presentation.routing.Payment;
+import account.presentation.routing.Payments;
 import account.presentation.routing.Signup;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +49,7 @@ public class WebSecurityConfig {
                 .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, Signup.PATH).permitAll()
+                        .requestMatchers(Payments.PATH).permitAll()
                         .requestMatchers(toH2Console()).permitAll()
                         .requestMatchers("/actuator/shutdown").permitAll()
                         .requestMatchers(Payment.PATH, ChangePass.PATH).authenticated()
