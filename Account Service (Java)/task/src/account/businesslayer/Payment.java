@@ -1,11 +1,8 @@
 package account.businesslayer;
 
-import account.businesslayer.converter.YearMonthConverter;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
-
-import java.time.YearMonth;
 
 @Entity
 @Table(name = "payments")
@@ -16,10 +13,10 @@ public class Payment {
     * */
     @Id
     @NotEmpty
-    private String username;
+    private String employee;
 
     @Id
-    @Convert(converter = YearMonthConverter.class)
+//    @Convert(converter = YearMonthConverter.class)
     private String period;
 
     @Column
@@ -29,18 +26,18 @@ public class Payment {
     public Payment() {
     }
 
-    public Payment(String username, String period, Long salary) {
-        this.username = username;
+    public Payment(String employee, String period, Long salary) {
+        this.employee = employee;
         this.period = period;
         this.salary = salary;
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmployee() {
+        return employee;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setEmployee(String username) {
+        this.employee = username;
     }
 
     public String getPeriod() {
@@ -62,7 +59,7 @@ public class Payment {
     @Override
     public String toString() {
         return "Payment{" +
-                "username='" + username + '\'' +
+                "username='" + employee + '\'' +
                 ", period='" + period + '\'' +
                 '}';
     }

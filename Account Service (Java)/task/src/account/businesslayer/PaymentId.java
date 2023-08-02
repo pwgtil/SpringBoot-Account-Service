@@ -1,26 +1,24 @@
 package account.businesslayer;
 
-import jakarta.persistence.Embeddable;
+import jakarta.persistence.Column;
 
-import java.io.Serial;
 import java.io.Serializable;
-import java.time.YearMonth;
 import java.util.Objects;
 
-@Embeddable
 public class PaymentId implements Serializable {
-    @Serial
-    private static final long serialVersionUID = 1L;
 
-    private String username;
 
-    private YearMonth period;
+    private String employee;
+
+    @Column(name = "period")
+//    @Convert(converter = YearMonthConverter.class)
+    private String period;
 
     public PaymentId() {
     }
 
-    public PaymentId(String username, YearMonth period) {
-        this.username = username;
+    public PaymentId(String employee, String period) {
+        this.employee = employee;
         this.period = period;
     }
 
@@ -29,19 +27,19 @@ public class PaymentId implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PaymentId paymentId = (PaymentId) o;
-        return Objects.equals(username, paymentId.username) && period.equals(paymentId.period);
+        return Objects.equals(employee, paymentId.employee) && period.equals(paymentId.period);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, period);
+        return Objects.hash(employee, period);
     }
 
-    public String getUsername() {
-        return username;
+    public String getEmployee() {
+        return employee;
     }
 
-    public YearMonth getPeriod() {
+    public String getPeriod() {
         return period;
     }
 }

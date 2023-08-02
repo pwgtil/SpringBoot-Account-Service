@@ -52,12 +52,12 @@ public class UserController {
 
     }
 
-    @GetMapping(Payment.PATH)
-    public ResponseEntity<UserDTO> payment(@AuthenticationPrincipal UserDetails details) {
-        UserDTO userDTO = UserDTO.convertUserToDTO(userService.findUserByEmail(details.getUsername()));
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
-
-    }
+//    @GetMapping(Payment.PATH)
+//    public ResponseEntity<UserDTO> payment(@AuthenticationPrincipal UserDetails details) {
+//        UserDTO userDTO = UserDTO.convertUserToDTO(userService.findUserByEmail(details.getUsername()));
+//        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+//
+//    }
 
     @PostMapping(ChangePass.PATH)
     public ResponseEntity<PasswordDTO> changePassword(@Valid @RequestBody PasswordDTO passwordDTO, @AuthenticationPrincipal UserDetails details) {
