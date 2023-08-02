@@ -1,8 +1,9 @@
-package account.presentation;
+package account.controller;
 
-import account.businesslayer.Payment;
+import account.entity.Payment;
 import account.businesslayer.PaymentService;
-import account.presentation.custom_messages.StatusResponse;
+import account.dto.response.StatusDTO;
+import account.controller.routing.Payments;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +24,19 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @PostMapping(account.presentation.routing.Payments.PATH)
-    public ResponseEntity<StatusResponse> createPayments(@RequestBody List<Payment> paymentList) {
+    @PostMapping(Payments.PATH)
+    public ResponseEntity<StatusDTO> createPayments(@RequestBody List<Payment> paymentList) {
         paymentService.createMultiple(paymentList);
-        return new ResponseEntity<>(new StatusResponse("Added successfully!"), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusDTO("Added successfully!"), HttpStatus.OK);
     }
 
-    @PutMapping(account.presentation.routing.Payments.PATH)
-    public ResponseEntity<StatusResponse> updatePayments(@RequestBody Payment payment) {
+    @PutMapping(Payments.PATH)
+    public ResponseEntity<StatusDTO> updatePayments(@RequestBody Payment payment) {
         paymentService.update(payment);
-        return new ResponseEntity<>(new StatusResponse("Updated successfully!"), HttpStatus.OK);
+        return new ResponseEntity<>(new StatusDTO("Updated successfully!"), HttpStatus.OK);
     }
 
-    @GetMapping(account.presentation.routing.Payment.PATH)
+    @GetMapping(account.controller.routing.Payment.PATH)
     public ResponseEntity<?> getPayment(@RequestParam(required = false) String period, @AuthenticationPrincipal UserDetails user) {
         if (period != null) {
             return new ResponseEntity<>(paymentService.getPaymentDetails(period, user), HttpStatus.OK);

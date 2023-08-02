@@ -1,13 +1,14 @@
 package account.businesslayer;
 
-import account.persistance.UserRepository;
+import account.entity.User;
+import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("userService")
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
 

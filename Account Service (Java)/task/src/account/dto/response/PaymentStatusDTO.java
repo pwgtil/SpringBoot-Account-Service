@@ -1,23 +1,23 @@
-package account.presentation.custom_messages;
+package account.dto.response;
 
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
-public class PaymentStatusResponse implements Comparable<PaymentStatusResponse>{
+public class PaymentStatusDTO implements Comparable<PaymentStatusDTO>{
     private String name;
     private String lastname;
     private String period;
     private String salary;
     private YearMonth yearMonth;
 
-    public PaymentStatusResponse() {
+    public PaymentStatusDTO() {
     }
 
     public String getName() {
         return name;
     }
 
-    public PaymentStatusResponse addName(String name) {
+    public PaymentStatusDTO addName(String name) {
         this.name = name;
         return this;
     }
@@ -26,7 +26,7 @@ public class PaymentStatusResponse implements Comparable<PaymentStatusResponse>{
         return lastname;
     }
 
-    public PaymentStatusResponse addLastname(String lastname) {
+    public PaymentStatusDTO addLastname(String lastname) {
         this.lastname = lastname;
         return this;
     }
@@ -35,7 +35,7 @@ public class PaymentStatusResponse implements Comparable<PaymentStatusResponse>{
         return period;
     }
 
-    public PaymentStatusResponse addPeriod(String period) {
+    public PaymentStatusDTO addPeriod(String period) {
         DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-yyyy");
         DateTimeFormatter FORMATTER2 = DateTimeFormatter.ofPattern("LLLL-yyyy");
         this.yearMonth = YearMonth.parse(period, FORMATTER);
@@ -47,13 +47,13 @@ public class PaymentStatusResponse implements Comparable<PaymentStatusResponse>{
         return salary;
     }
 
-    public PaymentStatusResponse addSalary(Long salary) {
+    public PaymentStatusDTO addSalary(Long salary) {
         this.salary = salary / 100L + " dollar(s) " + salary % 100 + " cent(s)";
         return this;
     }
 
     @Override
-    public int compareTo(PaymentStatusResponse o) {
+    public int compareTo(PaymentStatusDTO o) {
         return o.yearMonth.compareTo(this.yearMonth);
     }
 }

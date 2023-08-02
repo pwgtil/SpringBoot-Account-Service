@@ -1,9 +1,10 @@
-package account.presentation;
+package account.controller;
 
 import account.businesslayer.UserService;
-import account.presentation.routing.Payment;
-import account.presentation.routing.Signup;
-import account.presentation.routing.ChangePass;
+import account.dto.PasswordDTO;
+import account.dto.UserDTO;
+import account.controller.routing.Signup;
+import account.controller.routing.ChangePass;
 import account.security.PasswordService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;

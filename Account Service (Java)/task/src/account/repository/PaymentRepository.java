@@ -1,7 +1,7 @@
-package account.persistance;
+package account.repository;
 
-import account.businesslayer.Payment;
-import account.businesslayer.PaymentId;
+import account.entity.Payment;
+import account.entity.PaymentId;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

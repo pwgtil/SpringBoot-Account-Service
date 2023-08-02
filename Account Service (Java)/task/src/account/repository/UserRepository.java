@@ -1,6 +1,6 @@
-package account.persistance;
+package account.repository;
 
-import account.businesslayer.User;
+import account.entity.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 

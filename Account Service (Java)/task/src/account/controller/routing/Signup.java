@@ -1,4 +1,4 @@
-package account.presentation.routing;
+package account.controller.routing;
 
 public class Signup extends Auth {
     public static final String ROUTE = "/signup";

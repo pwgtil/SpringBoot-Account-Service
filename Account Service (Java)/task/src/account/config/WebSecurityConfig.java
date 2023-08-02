@@ -1,10 +1,12 @@
-package account.security;
+package account.config;
 
 import account.businesslayer.UserService;
-import account.presentation.routing.ChangePass;
-import account.presentation.routing.Payment;
-import account.presentation.routing.Payments;
-import account.presentation.routing.Signup;
+import account.controller.routing.ChangePass;
+import account.controller.routing.Payment;
+import account.controller.routing.Payments;
+import account.controller.routing.Signup;
+import account.security.PasswordService;
+import account.security.RestAuthenticationEntryPoint;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -15,8 +17,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
@@ -57,6 +57,8 @@ public class WebSecurityConfig {
                         .anyRequest().denyAll())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling().accessDeniedPage("/accessDenied.jsp")
                 .and()
                 .build();
     }

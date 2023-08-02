@@ -1,7 +1,8 @@
 package account.businesslayer;
 
-import account.persistance.PaymentRepository;
-import account.presentation.custom_messages.PaymentStatusResponse;
+import account.entity.Payment;
+import account.repository.PaymentRepository;
+import account.dto.response.PaymentStatusDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -59,23 +60,23 @@ public class PaymentService {
         }
     }
 
-    public PaymentStatusResponse getPaymentDetails(String period, UserDetails user) {
+    public PaymentStatusDTO getPaymentDetails(String period, UserDetails user) {
         Payment payment = getPayment(user.getUsername(), period).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, period + " not found in the DB for user: " + user.getUsername())
         );
         UserGetInfo userInfo = (UserGetInfo) user;
-        return new PaymentStatusResponse()
+        return new PaymentStatusDTO()
                 .addName(userInfo.getName())
                 .addLastname(userInfo.getLastname())
                 .addPeriod(period)
                 .addSalary(payment.getSalary());
     }
 
-    public List<PaymentStatusResponse> getAllPaymentDetails(UserDetails user) {
+    public List<PaymentStatusDTO> getAllPaymentDetails(UserDetails user) {
         List<Payment> paymentList = paymentRepository.findByEmployee(user.getUsername());
         UserGetInfo userInfo = (UserGetInfo) user;
         return paymentList.stream().map(payment ->
-                        new PaymentStatusResponse()
+                        new PaymentStatusDTO()
                                 .addName(userInfo.getName())
                                 .addLastname(userInfo.getLastname())
                                 .addPeriod(payment.getPeriod())

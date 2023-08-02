@@ -1,4 +1,4 @@
-package account.presentation.routing;
+package account.controller.routing;
 
 public class Api {
     public static final String ROUTE = "/api";

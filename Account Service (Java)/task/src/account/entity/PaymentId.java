@@ -1,4 +1,4 @@
-package account.businesslayer;
+package account.entity;
 
 import jakarta.persistence.Column;
 

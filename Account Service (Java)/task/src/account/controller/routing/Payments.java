@@ -1,4 +1,4 @@
-package account.presentation.routing;
+package account.controller.routing;
 
 public class Payments extends Acct {
     public static final String AUTH = "/payments";

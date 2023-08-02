@@ -1,4 +1,4 @@
-package account.presentation;
+package account.exception;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,16 +50,4 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
         return new ResponseEntity<>(body, status);
     }
-
-//    @ExceptionHandler(UserAlreadyExistsException.class)
-//    public ResponseEntity<CustomErrorMessage> handleSignupUserExist(UserAlreadyExistsException e, WebRequest request) {
-//        CustomErrorMessage body = new CustomErrorMessage(
-//                LocalDateTime.now(),
-//                HttpStatus.BAD_REQUEST.value(),
-//                "Bad Request",
-//                e.getMessage(),
-//                request.getDescription(false)
-//        );
-//        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
-//    }
 }

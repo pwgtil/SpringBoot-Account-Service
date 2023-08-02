@@ -1,4 +1,4 @@
-package account.presentation.routing;
+package account.controller.routing;
 
 public class Auth extends Api {
     public static final String AUTH = "/auth";
