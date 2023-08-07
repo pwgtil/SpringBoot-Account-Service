@@ -8,7 +8,7 @@ public class PasswordDTO {
     @NotNull
     @NotEmpty(message = "The password length must be at least 12 chars!")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY, value = "new_password")
-    private String newPassword;
+    private String password;
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private String email;
@@ -19,12 +19,12 @@ public class PasswordDTO {
     public PasswordDTO() {
     }
 
-    public String getNewPassword() {
-        return newPassword;
+    public String getPassword() {
+        return password;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {

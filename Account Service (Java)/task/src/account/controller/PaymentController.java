@@ -1,7 +1,7 @@
 package account.controller;
 
 import account.entity.Payment;
-import account.businesslayer.PaymentService;
+import account.service.PaymentService;
 import account.dto.response.StatusDTO;
 import account.controller.routing.Payments;
 import org.springframework.beans.factory.annotation.Autowired;

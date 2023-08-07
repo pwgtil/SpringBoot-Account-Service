@@ -1,11 +1,11 @@
 package account.config;
 
-import account.businesslayer.UserService;
+import account.service.UserService;
 import account.controller.routing.ChangePass;
 import account.controller.routing.Payment;
 import account.controller.routing.Payments;
 import account.controller.routing.Signup;
-import account.security.PasswordService;
+import account.service.PasswordService;
 import account.security.RestAuthenticationEntryPoint;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;

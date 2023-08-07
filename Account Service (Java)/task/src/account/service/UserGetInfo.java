@@ -1,4 +1,4 @@
-package account.businesslayer;
+package account.service;
 
 public interface UserGetInfo {
     public String getUsername();

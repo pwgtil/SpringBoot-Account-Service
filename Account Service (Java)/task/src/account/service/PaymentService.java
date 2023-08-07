@@ -1,4 +1,4 @@
-package account.businesslayer;
+package account.service;
 
 import account.entity.Payment;
 import account.repository.PaymentRepository;

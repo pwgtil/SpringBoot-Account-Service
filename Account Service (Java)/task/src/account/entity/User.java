@@ -1,6 +1,6 @@
 package account.entity;
 
-import account.businesslayer.UserGetInfo;
+import account.service.UserGetInfo;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
