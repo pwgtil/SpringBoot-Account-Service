@@ -17,7 +17,7 @@ public class Group {
     @Column(unique = true, nullable = false)
     private String code;
 
-    @ManyToMany(mappedBy = "user_groups")
+    @ManyToMany(mappedBy = "userGroups")
     private Set<User> users;
 
     /*

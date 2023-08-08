@@ -1,5 +1,9 @@
 package account.controller;
 
+import account.controller.routing.Role;
+import account.controller.routing.User;
+import account.dto.RoleOpsDTO;
+import account.dto.response.UserDeletionStatusDTO;
 import account.service.UserService;
 import account.dto.PasswordDTO;
 import account.dto.UserDTO;
@@ -13,6 +17,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -40,5 +46,26 @@ public class UserController {
         passwordDTO.setStatus("The password has been updated successfully");
 
         return new ResponseEntity<>(passwordDTO, HttpStatus.OK);
+    }
+
+    @GetMapping(User.PATH)
+    public ResponseEntity<List<UserDTO>> getUsersData() {
+        List<UserDTO> users = userService.getAllUsers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @DeleteMapping(User.PATH + "{email}")
+    public ResponseEntity<UserDeletionStatusDTO> deleteUser(@PathVariable String email) {
+        userService.deleteUser(email);
+        return new ResponseEntity<>(new UserDeletionStatusDTO(
+                email,
+                "Deleted successfully!"
+        ), HttpStatus.OK);
+    }
+
+    @PutMapping(Role.PATH)
+    public ResponseEntity<UserDTO> changeUserRoles(@Valid @RequestBody RoleOpsDTO roleOperation) {
+        UserDTO user = userService.changeRole(roleOperation.getUsername(), roleOperation.getRole(), roleOperation.getOperation());
+        return new ResponseEntity<>(user, HttpStatus.OK);
     }
 }

@@ -1,9 +1,15 @@
 package account.service;
 
+import account.dto.UserDTO;
+import account.entity.Group;
 import account.entity.User;
 import account.repository.UserRepository;
+import account.security.UserRole;
+import account.security.UserRoleOps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,6 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 @Service("userService")
 public class UserService implements UserDetailsService {
@@ -40,7 +50,20 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.findUserByEmail(username.toLowerCase());
+        User user = findUserByUsername(username);
+        return org.springframework.security.core.userdetails.User.withUsername(username)
+                .password(user.getPassword())
+                .authorities(user.getAuthorities())
+                .build();
+    }
+
+    private Collection<GrantedAuthority> getAuthorities(User user) {
+        Set<Group> userGroups = user.getUserGroups();
+        Collection<GrantedAuthority> authorities = new ArrayList<>(userGroups.size());
+        for (Group group : userGroups) {
+            authorities.add(new SimpleGrantedAuthority(group.getCode().toUpperCase()));
+        }
+        return authorities;
     }
 
     public User signUp(User user) {
@@ -82,5 +105,16 @@ public class UserService implements UserDetailsService {
         user.setPassword(passwordService.getPasswordEncoder().encode(password));
 
         save(user);
+    }
+
+    public List<UserDTO> getAllUsers() {
+        return List.of(new UserDTO());
+    }
+
+    public void deleteUser(String email) {
+    }
+
+    public UserDTO changeRole(String username, UserRole role, UserRoleOps operation) {
+        return new UserDTO();
     }
 }

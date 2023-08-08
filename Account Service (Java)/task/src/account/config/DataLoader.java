@@ -2,6 +2,7 @@ package account.config;
 
 import account.entity.Group;
 import account.repository.GroupRepository;
+import account.security.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,9 +19,9 @@ public class DataLoader {
 
     private void createRoles() {
         try {
-            groupRepository.save(new Group("ROLE_ADMINISTRATOR"));
-            groupRepository.save(new Group("ROLE_USER"));
-            groupRepository.save(new Group("ROLE_ACCOUNTANT"));
+            groupRepository.save(new Group(UserRole.ROLE_ADMINISTRATOR.name()));
+            groupRepository.save(new Group(UserRole.ROLE_USER.name()));
+            groupRepository.save(new Group(UserRole.ROLE_ACCOUNTANT.name()));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -1,10 +1,7 @@
 package account.config;
 
+import account.controller.routing.*;
 import account.service.UserService;
-import account.controller.routing.ChangePass;
-import account.controller.routing.Payment;
-import account.controller.routing.Payments;
-import account.controller.routing.Signup;
 import account.service.PasswordService;
 import account.security.RestAuthenticationEntryPoint;
 import jakarta.validation.constraints.NotNull;
@@ -49,10 +46,12 @@ public class WebSecurityConfig {
                 .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, Signup.PATH).permitAll()
-                        .requestMatchers(Payments.PATH).permitAll()
+                        .requestMatchers(ChangePass.PATH).authenticated()
+                        .requestMatchers(Payment.PATH).hasAnyRole("USER", "ACCOUNTANT")
+                        .requestMatchers(Payments.PATH).hasRole("ACCOUNTANT")
+                        .requestMatchers(User.PATH, Role.PATH).hasRole("ADMINISTRATOR")
                         .requestMatchers(toH2Console()).permitAll()
                         .requestMatchers("/actuator/shutdown").permitAll()
-                        .requestMatchers(Payment.PATH, ChangePass.PATH).authenticated()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().denyAll())
                 .sessionManagement()
