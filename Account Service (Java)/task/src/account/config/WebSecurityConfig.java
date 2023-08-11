@@ -27,11 +27,11 @@ public class WebSecurityConfig {
     public void configure(@Autowired @NotNull AuthenticationManagerBuilder auth, @Autowired PasswordService passwordService) throws Exception {
         auth
                 .userDetailsService(userService)
-                .passwordEncoder(passwordService.getPasswordEncoder())
-                .and()
-
-                .inMemoryAuthentication()
-                .withUser("admin").password("admin").roles("ADMIN");
+                .passwordEncoder(passwordService.getPasswordEncoder());
+//                .and()
+//
+//                .inMemoryAuthentication()
+//                .withUser("admin").password("admin").roles("ADMIN");
                 //.and().passwordEncoder(NoOpPasswordEncoder.getInstance());
 
     }
@@ -57,7 +57,9 @@ public class WebSecurityConfig {
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .exceptionHandling().accessDeniedPage("/accessDenied.jsp")
+                .exceptionHandling()
+                .accessDeniedHandler(new CustomAccessDeniedHandler())
+//                .accessDeniedPage("/accessDenied.jsp")
                 .and()
                 .build();
     }

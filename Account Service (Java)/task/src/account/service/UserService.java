@@ -3,7 +3,9 @@ package account.service;
 import account.dto.UserDTO;
 import account.entity.Group;
 import account.entity.User;
+import account.repository.GroupRepository;
 import account.repository.UserRepository;
+import account.security.RolesManager;
 import account.security.UserRole;
 import account.security.UserRoleOps;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,10 +28,15 @@ import java.util.Set;
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordService passwordService;
+    private final RolesManager rolesManager;
 
-    public UserService(@Autowired UserRepository userRepository, @Autowired PasswordService passwordService) {
+    @Autowired
+    public UserService(UserRepository userRepository,
+                       PasswordService passwordService,
+                       RolesManager rolesManager) {
         this.userRepository = userRepository;
         this.passwordService = passwordService;
+        this.rolesManager = rolesManager;
     }
 
     public User findUserByEmail(String email) {
@@ -41,6 +48,17 @@ public class UserService implements UserDetailsService {
     }
 
     public User save(User userInput) {
+        if (userRepository.count() == 0) {
+            userInput.setUserGroups(rolesManager.processRole(
+                    userInput.getUserGroups(),
+                    UserRole.ROLE_ADMINISTRATOR.name(),
+                    UserRoleOps.GRANT.name()));
+        } else {
+            userInput.setUserGroups(rolesManager.processRole(
+                    userInput.getUserGroups(),
+                    UserRole.ROLE_USER.name(),
+                    UserRoleOps.GRANT.name()));
+        }
         User dbUser = userRepository.findUserByEmailIgnoreCase(userInput.getEmail());
         if (dbUser != null) {
             userInput.setID(dbUser.getId());
@@ -51,10 +69,14 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findUserByUsername(username);
-        return org.springframework.security.core.userdetails.User.withUsername(username)
-                .password(user.getPassword())
-                .authorities(user.getAuthorities())
-                .build();
+        if (user != null) {
+            return org.springframework.security.core.userdetails.User.withUsername(username)
+                    .password(user.getPassword())
+                    .authorities(user.getAuthorities())
+                    .build();
+        } else {
+            return null;
+        }
     }
 
     private Collection<GrantedAuthority> getAuthorities(User user) {
@@ -108,7 +130,11 @@ public class UserService implements UserDetailsService {
     }
 
     public List<UserDTO> getAllUsers() {
-        return List.of(new UserDTO());
+        List<UserDTO> userList = new ArrayList<>();
+        for (User user : userRepository.findAll()) {
+            userList.add(UserDTO.convertUserToDTO(user));
+        }
+        return userList.stream().toList();
     }
 
     public void deleteUser(String email) {

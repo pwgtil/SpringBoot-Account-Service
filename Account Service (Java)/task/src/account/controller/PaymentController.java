@@ -24,10 +24,17 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    @PostMapping(Payments.PATH)
+    /*    @PostMapping(Payments.PATH)
     public ResponseEntity<StatusDTO> createPayments(@RequestBody List<Payment> paymentList) {
         paymentService.createMultiple(paymentList);
         return new ResponseEntity<>(new StatusDTO("Added successfully!"), HttpStatus.OK);
+    }*/
+
+    @PostMapping(Payments.PATH)
+    @ResponseStatus(HttpStatus.OK) // Let's check this way of settings status
+    public StatusDTO createPayments(@RequestBody List<Payment> paymentList) {
+        paymentService.createMultiple(paymentList);
+        return new StatusDTO("Added successfully!");
     }
 
     @PutMapping(Payments.PATH)

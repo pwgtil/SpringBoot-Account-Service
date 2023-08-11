@@ -3,8 +3,10 @@ package account.entity;
 import account.service.UserGetInfo;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,9 +34,10 @@ public class User implements UserDetails, UserGetInfo {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
+    @ManyToMany(fetch = FetchType.EAGER,
+            cascade = {
+                CascadeType.PERSIST,
+                CascadeType.MERGE
     })
     @JoinTable(name = "user_groups",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -54,6 +57,8 @@ public class User implements UserDetails, UserGetInfo {
     public User() {
 
     }
+
+
 
 
     /*
@@ -111,7 +116,12 @@ public class User implements UserDetails, UserGetInfo {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        Set<Group> userGroups = this.getUserGroups();
+        Collection<GrantedAuthority> authorities = new ArrayList<>(userGroups.size());
+        for (Group group : userGroups) {
+            authorities.add(new SimpleGrantedAuthority(group.getCode().toUpperCase()));
+        }
+        return authorities;
     }
 
     @Override
