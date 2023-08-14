@@ -92,11 +92,11 @@ public class RolesManager {
 
 
     private void removeValidation() {
+        if (!containsRole(role)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user does not have a role!");
+        }
         if (currentRoles.size() <= 1) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The user must have at least one role!");
-        }
-        if (!containsRole(role)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Role not found!");
         }
     }
 

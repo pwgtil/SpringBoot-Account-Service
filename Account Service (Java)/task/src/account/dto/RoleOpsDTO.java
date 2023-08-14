@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotEmpty;
 public class RoleOpsDTO {
 
     @NotEmpty(message = "Email cannot be empty (it's your username!)")
-    @Email(regexp = "[\\w.]+(@acme.com)", message = "Only acme.com domain please")
+//    @Email(regexp = "[\\w.]+(@acme.com)", message = "Only acme.com domain please")
     private String user;
 
     @NotEmpty(message = "Role cannot be empty (ROLE_ADMINISTRATOR, ROLE_USER or ROLE_ACCOUNTANT)")
