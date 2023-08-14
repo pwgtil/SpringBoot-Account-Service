@@ -47,7 +47,7 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, Signup.PATH).permitAll()
                         .requestMatchers(ChangePass.PATH).authenticated()
-                        .requestMatchers(Payment.PATH).hasAnyRole("USER", "ACCOUNTANT")
+                        .requestMatchers(Payment.PATH).authenticated() //.hasAnyRole("USER", "ACCOUNTANT")
                         .requestMatchers(Payments.PATH).hasRole("ACCOUNTANT")
                         .requestMatchers(User.PATH, User.PATH + "/*", Role.PATH).hasRole("ADMINISTRATOR")
                         .requestMatchers(toH2Console()).permitAll()

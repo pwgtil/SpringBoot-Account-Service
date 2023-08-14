@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service("userService")
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, UserServiceGetInfo {
     private final UserRepository userRepository;
     private final PasswordService passwordService;
     private final RolesManager rolesManager;
@@ -158,5 +158,10 @@ public class UserService implements UserDetailsService {
         save(user);
 
         return UserDTO.convertUserToDTO(user);
+    }
+
+    @Override
+    public UserGetInfo getUserInfo(String username) {
+        return findUserByUsername(username);
     }
 }

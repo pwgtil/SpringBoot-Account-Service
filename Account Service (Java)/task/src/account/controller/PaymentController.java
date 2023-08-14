@@ -24,27 +24,26 @@ public class PaymentController {
         this.paymentService = paymentService;
     }
 
-    /*    @PostMapping(Payments.PATH)
-    public ResponseEntity<StatusDTO> createPayments(@RequestBody List<Payment> paymentList) {
-        paymentService.createMultiple(paymentList);
-        return new ResponseEntity<>(new StatusDTO("Added successfully!"), HttpStatus.OK);
-    }*/
-
     @PostMapping(Payments.PATH)
-    @ResponseStatus(HttpStatus.OK) // Let's check this way of settings status
+    @ResponseStatus(HttpStatus.OK)
     public StatusDTO createPayments(@RequestBody List<Payment> paymentList) {
         paymentService.createMultiple(paymentList);
         return new StatusDTO("Added successfully!");
     }
 
     @PutMapping(Payments.PATH)
-    public ResponseEntity<StatusDTO> updatePayments(@RequestBody Payment payment) {
+    @ResponseStatus(HttpStatus.OK)
+    public StatusDTO updatePayments(@RequestBody Payment payment) {
         paymentService.update(payment);
-        return new ResponseEntity<>(new StatusDTO("Updated successfully!"), HttpStatus.OK);
+        return new StatusDTO("Updated successfully!");
     }
 
     @GetMapping(account.controller.routing.Payment.PATH)
     public ResponseEntity<?> getPayment(@RequestParam(required = false) String period, @AuthenticationPrincipal UserDetails user) {
+        if (user == null) {
+            return new ResponseEntity<>(new StatusDTO("User must login!"), HttpStatus.OK);
+        }
+
         if (period != null) {
             return new ResponseEntity<>(paymentService.getPaymentDetails(period, user), HttpStatus.OK);
         } else {

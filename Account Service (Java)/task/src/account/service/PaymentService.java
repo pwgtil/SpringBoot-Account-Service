@@ -22,11 +22,11 @@ import java.util.stream.Collectors;
 public class PaymentService {
     private final PaymentRepository paymentRepository;
 
-    private final UserDetailsService userDetailsService;
+    private final UserServiceGetInfo userServiceGetInfo;
 
-    public PaymentService(@Autowired PaymentRepository paymentRepository, @Autowired UserDetailsService service) {
+    public PaymentService(@Autowired PaymentRepository paymentRepository, @Autowired UserServiceGetInfo userServiceGetInfo) {
         this.paymentRepository = paymentRepository;
-        this.userDetailsService = service;
+        this.userServiceGetInfo = userServiceGetInfo;
     }
 
     public Optional<Payment> getPayment(String email, String period) {
@@ -39,7 +39,7 @@ public class PaymentService {
         if (getPayment(payment.getEmployee(), payment.getPeriod()).isEmpty()) {
             return paymentRepository.save(payment);
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, payment.toString() + " already exits!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, payment + " already exits!");
         }
     }
 
@@ -49,7 +49,7 @@ public class PaymentService {
         if (getPayment(payment.getEmployee(), payment.getPeriod()).isPresent()) {
             return paymentRepository.save(payment);
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, payment.toString() + " does not exist!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, payment + " does not exist!");
         }
     }
 
@@ -72,13 +72,13 @@ public class PaymentService {
                 .addSalary(payment.getSalary());
     }
 
-    public List<PaymentStatusDTO> getAllPaymentDetails(UserDetails user) {
-        List<Payment> paymentList = paymentRepository.findByEmployee(user.getUsername());
-        UserGetInfo userInfo = (UserGetInfo) user;
+    public List<PaymentStatusDTO> getAllPaymentDetails(UserDetails userDetail) {
+        List<Payment> paymentList = paymentRepository.findByEmployee(userDetail.getUsername());
+        UserGetInfo user = userServiceGetInfo.getUserInfo(userDetail.getUsername());
         return paymentList.stream().map(payment ->
                         new PaymentStatusDTO()
-                                .addName(userInfo.getName())
-                                .addLastname(userInfo.getLastname())
+                                .addName(user.getName())
+                                .addLastname(user.getLastname())
                                 .addPeriod(payment.getPeriod())
                                 .addSalary(payment.getSalary())
                 ).sorted()
@@ -86,7 +86,7 @@ public class PaymentService {
     }
 
     private void assertValidUserAccount(String username) {
-        if (userDetailsService.loadUserByUsername(username) == null) {
+        if (userServiceGetInfo.getUserInfo(username) == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account " + username + " does not exist");
         }
     }
