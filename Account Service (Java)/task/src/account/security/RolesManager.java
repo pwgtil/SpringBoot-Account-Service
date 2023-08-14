@@ -69,7 +69,7 @@ public class RolesManager {
             case ROLE_ADMINISTRATOR -> {
                 switch (operation) {
                     case REMOVE -> {
-                        removeValidation();
+//                        removeValidation();
                         removeAdmin();
                     }
                     case GRANT -> {
