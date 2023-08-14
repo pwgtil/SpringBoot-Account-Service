@@ -47,18 +47,23 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
         return userRepository.findUserByEmailIgnoreCase(username);
     }
 
-    public User save(User userInput) {
+    private User setBaseRole(User user) {
         if (userRepository.count() == 0) {
-            userInput.setUserGroups(rolesManager.processRole(
-                    userInput.getUserGroups(),
+            user.setUserGroups(rolesManager.processRole(
+                    user.getUserGroups(),
                     UserRole.ROLE_ADMINISTRATOR.name(),
                     UserRoleOps.GRANT.name()));
         } else {
-            userInput.setUserGroups(rolesManager.processRole(
-                    userInput.getUserGroups(),
+            user.setUserGroups(rolesManager.processRole(
+                    user.getUserGroups(),
                     UserRole.ROLE_USER.name(),
                     UserRoleOps.GRANT.name()));
         }
+        return user;
+    }
+
+    public User save(User userInput) {
+
         User dbUser = userRepository.findUserByEmailIgnoreCase(userInput.getEmail());
         if (dbUser != null) {
             userInput.setID(dbUser.getId());
@@ -101,6 +106,9 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
         } catch (InvalidParameterException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+
+        // Set base role. If first user in DB -> Admin, others Users
+        user = setBaseRole(user);
 
         user.setPassword(passwordService.getPasswordEncoder().encode(user.getPassword()));
 
