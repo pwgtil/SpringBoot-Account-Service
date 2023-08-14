@@ -1,7 +1,5 @@
 package account.dto;
 
-import account.security.UserRole;
-import account.security.UserRoleOps;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
@@ -9,7 +7,7 @@ public class RoleOpsDTO {
 
     @NotEmpty(message = "Email cannot be empty (it's your username!)")
     @Email(regexp = "[\\w.]+(@acme.com)", message = "Only acme.com domain please")
-    private String username;
+    private String user;
 
     @NotEmpty(message = "Role cannot be empty (ROLE_ADMINISTRATOR, ROLE_USER or ROLE_ACCOUNTANT)")
     private String role;
@@ -17,8 +15,8 @@ public class RoleOpsDTO {
     @NotEmpty(message = "Operation cannot be empty (GRANT or REMOVE)")
     private String operation;
 
-    public RoleOpsDTO(String username, String role, String operation) {
-        this.username = username;
+    public RoleOpsDTO(String user, String role, String operation) {
+        this.user = user;
         this.role = role;
         this.operation = operation;
     }
@@ -26,12 +24,12 @@ public class RoleOpsDTO {
     public RoleOpsDTO() {
     }
 
-    public String getUsername() {
-        return username;
+    public String getUser() {
+        return user;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUser(String user) {
+        this.user = user;
     }
 
     public String getRole() {
@@ -39,6 +37,11 @@ public class RoleOpsDTO {
     }
 
     public void setRole(String role) {
+        role = role.toUpperCase();
+        String pattern = "\\bROLE_";
+        if (!role.matches(pattern)){
+            role = "ROLE_" + role;
+        }
         this.role = role;
     }
 
