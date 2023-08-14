@@ -4,6 +4,7 @@ import account.entity.Payment;
 import account.service.PaymentService;
 import account.dto.response.StatusDTO;
 import account.controller.routing.Payments;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +27,14 @@ public class PaymentController {
 
     @PostMapping(Payments.PATH)
     @ResponseStatus(HttpStatus.OK)
-    public StatusDTO createPayments(@RequestBody List<Payment> paymentList) {
+    public StatusDTO createPayments(@Valid @RequestBody List<Payment> paymentList) {
         paymentService.createMultiple(paymentList);
         return new StatusDTO("Added successfully!");
     }
 
     @PutMapping(Payments.PATH)
     @ResponseStatus(HttpStatus.OK)
-    public StatusDTO updatePayments(@RequestBody Payment payment) {
+    public StatusDTO updatePayments(@Valid @RequestBody Payment payment) {
         paymentService.update(payment);
         return new StatusDTO("Updated successfully!");
     }

@@ -20,7 +20,7 @@ public class Payment {
     private String period;
 
     @Column
-    @Min(value = 0L, message = "The salary must not be negative")
+//    @Min(value = 0L, message = "The salary must not be negative")
     private Long salary;
 
     public Payment() {

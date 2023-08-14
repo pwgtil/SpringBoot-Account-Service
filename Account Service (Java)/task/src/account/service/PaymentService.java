@@ -6,6 +6,7 @@ import account.dto.response.PaymentStatusDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.method.P;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,7 @@ public class PaymentService {
     }
 
     public Payment create(@NotNull Payment payment) {
-        assertValidUserAccount(payment.getEmployee());
-        assertValidPeriod(payment.getPeriod());
+        paymentValidations(payment);
         if (getPayment(payment.getEmployee(), payment.getPeriod()).isEmpty()) {
             return paymentRepository.save(payment);
         } else {
@@ -44,8 +44,7 @@ public class PaymentService {
     }
 
     public Payment update(@NotNull Payment payment) {
-        assertValidUserAccount(payment.getEmployee());
-        assertValidPeriod(payment.getPeriod());
+        paymentValidations(payment);
         if (getPayment(payment.getEmployee(), payment.getPeriod()).isPresent()) {
             return paymentRepository.save(payment);
         } else {
@@ -60,14 +59,14 @@ public class PaymentService {
         }
     }
 
-    public PaymentStatusDTO getPaymentDetails(String period, UserDetails user) {
-        Payment payment = getPayment(user.getUsername(), period).orElseThrow(
-                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, period + " not found in the DB for user: " + user.getUsername())
+    public PaymentStatusDTO getPaymentDetails(String period, UserDetails userDetail) {
+        Payment payment = getPayment(userDetail.getUsername(), period).orElseThrow(
+                () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, period + " not found in the DB for user: " + userDetail.getUsername())
         );
-        UserGetInfo userInfo = (UserGetInfo) user;
+        UserGetInfo user = userServiceGetInfo.getUserInfo(userDetail.getUsername());
         return new PaymentStatusDTO()
-                .addName(userInfo.getName())
-                .addLastname(userInfo.getLastname())
+                .addName(user.getName())
+                .addLastname(user.getLastname())
                 .addPeriod(period)
                 .addSalary(payment.getSalary());
     }
@@ -85,6 +84,12 @@ public class PaymentService {
                 .collect(Collectors.toList());
     }
 
+    private void paymentValidations(Payment payment) {
+        assertValidUserAccount(payment.getEmployee());
+        assertValidPeriod(payment.getPeriod());
+        assertValidSalary(payment.getSalary());
+    }
+
     private void assertValidUserAccount(String username) {
         if (userServiceGetInfo.getUserInfo(username) == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Account " + username + " does not exist");
@@ -97,6 +102,12 @@ public class PaymentService {
             YearMonth.parse(period, FORMATTER);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, period + " is invalid");
+        }
+    }
+
+    private void assertValidSalary(Long salary) {
+        if (salary < 0L) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "The salary must not be negative");
         }
     }
 }
