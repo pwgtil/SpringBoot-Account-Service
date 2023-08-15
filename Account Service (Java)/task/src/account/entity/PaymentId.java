@@ -11,7 +11,6 @@ public class PaymentId implements Serializable {
     private String employee;
 
     @Column(name = "period")
-//    @Convert(converter = YearMonthConverter.class)
     private String period;
 
     public PaymentId() {
@@ -35,11 +34,4 @@ public class PaymentId implements Serializable {
         return Objects.hash(employee, period);
     }
 
-    public String getEmployee() {
-        return employee;
-    }
-
-    public String getPeriod() {
-        return period;
-    }
 }

@@ -3,7 +3,6 @@ package account.config;
 import account.controller.routing.*;
 import account.service.UserService;
 import account.service.PasswordService;
-import account.security.RestAuthenticationEntryPoint;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

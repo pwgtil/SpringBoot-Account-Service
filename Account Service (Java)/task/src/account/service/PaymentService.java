@@ -1,14 +1,12 @@
 package account.service;
 
+import account.dto.response.PaymentStatusDTO;
 import account.entity.Payment;
 import account.repository.PaymentRepository;
-import account.dto.response.PaymentStatusDTO;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.method.P;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -30,23 +28,10 @@ public class PaymentService {
         this.userServiceGetInfo = userServiceGetInfo;
     }
 
-    public Optional<Payment> getPayment(String email, String period) {
-        return Optional.ofNullable(paymentRepository.findPaymentByEmployeeIgnoreCaseAndPeriod(email, period));
-    }
-
-    public Payment create(@NotNull Payment payment) {
-        paymentValidations(payment);
-        if (getPayment(payment.getEmployee(), payment.getPeriod()).isEmpty()) {
-            return paymentRepository.save(payment);
-        } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, payment + " already exits!");
-        }
-    }
-
-    public Payment update(@NotNull Payment payment) {
+    public void update(@NotNull Payment payment) {
         paymentValidations(payment);
         if (getPayment(payment.getEmployee(), payment.getPeriod()).isPresent()) {
-            return paymentRepository.save(payment);
+            paymentRepository.save(payment);
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, payment + " does not exist!");
         }
@@ -82,6 +67,19 @@ public class PaymentService {
                                 .addSalary(payment.getSalary())
                 ).sorted()
                 .collect(Collectors.toList());
+    }
+
+    private void create(@NotNull Payment payment) {
+        paymentValidations(payment);
+        if (getPayment(payment.getEmployee(), payment.getPeriod()).isEmpty()) {
+            paymentRepository.save(payment);
+        } else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, payment + " already exits!");
+        }
+    }
+
+    private Optional<Payment> getPayment(String email, String period) {
+        return Optional.ofNullable(paymentRepository.findPaymentByEmployeeIgnoreCaseAndPeriod(email, period));
     }
 
     private void paymentValidations(Payment payment) {

@@ -51,8 +51,7 @@ public class UserController {
     @GetMapping(User.PATH + "/")
     @ResponseStatus(HttpStatus.OK)
     public List<UserDTO> getUsersData() {
-        List<UserDTO> users = userService.getAllUsers();
-        return users;
+        return userService.getAllUsers();
     }
 
     @DeleteMapping(User.PATH + "/{email}")
@@ -65,7 +64,6 @@ public class UserController {
     @PutMapping(Role.PATH)
     @ResponseStatus(HttpStatus.OK)
     public UserDTO changeUserRoles(@Valid @RequestBody RoleOpsDTO roleOperation) {
-        UserDTO user = userService.changeRole(roleOperation.getUser(), roleOperation.getRole(), roleOperation.getOperation());
-        return user;
+        return userService.changeRole(roleOperation.getUser(), roleOperation.getRole(), roleOperation.getOperation());
     }
 }

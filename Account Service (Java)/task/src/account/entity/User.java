@@ -34,14 +34,8 @@ public class User implements UserDetails, UserGetInfo {
     @Column(name = "password")
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER,
-            cascade = {
-                CascadeType.PERSIST,
-                CascadeType.MERGE
-    })
-    @JoinTable(name = "user_groups",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "group_id"))
+    @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(name = "user_groups", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> userGroups = new HashSet<>();
 
     /*
@@ -58,9 +52,6 @@ public class User implements UserDetails, UserGetInfo {
 
     }
 
-
-
-
     /*
      * Getters, Setters
      * */
@@ -73,6 +64,10 @@ public class User implements UserDetails, UserGetInfo {
         this.userGroups = userGroups;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public void setID(Long id) {
         this.id = id;
     }
@@ -81,37 +76,26 @@ public class User implements UserDetails, UserGetInfo {
         return id;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setLastname(String lastname) {
-        this.lastname = lastname;
-    }
-
     public String getLastname() {
         return lastname;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override
     public String getPassword() {
         return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return this.getEmail();
     }
 
     @Override
@@ -122,11 +106,6 @@ public class User implements UserDetails, UserGetInfo {
             authorities.add(new SimpleGrantedAuthority(group.getCode().toUpperCase()));
         }
         return authorities;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.getEmail();
     }
 
     @Override

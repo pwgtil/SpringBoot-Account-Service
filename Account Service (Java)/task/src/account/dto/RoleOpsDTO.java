@@ -1,6 +1,5 @@
 package account.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
 public class RoleOpsDTO {
@@ -16,9 +15,9 @@ public class RoleOpsDTO {
     private String operation;
 
     public RoleOpsDTO(String user, String role, String operation) {
-        this.user = user;
-        this.role = role;
-        this.operation = operation;
+        setUser(user);
+        setRole(role);
+        setOperation(operation);
     }
 
     public RoleOpsDTO() {

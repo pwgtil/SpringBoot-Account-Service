@@ -8,8 +8,8 @@ import java.util.Set;
 @Table(name = "principle_groups")
 public class Group {
     /*
-    * Properties
-    * */
+     * Properties
+     * */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,8 +21,8 @@ public class Group {
     private Set<User> users;
 
     /*
-    * Constructors
-    * */
+     * Constructors
+     * */
     public Group(String code) {
         this.code = code;
     }
@@ -31,27 +31,10 @@ public class Group {
     }
 
     /*
-    * Getters Setters
-    * */
-
-    public Long getId() {
-        return id;
-    }
-
+     * Getters Setters
+     * */
     public String getCode() {
         return code;
     }
 
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-
-    public Set<User> getUsers() {
-        return users;
-    }
-
-    public void setUsers(Set<User> users) {
-        this.users = users;
-    }
 }

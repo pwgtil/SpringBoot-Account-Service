@@ -13,15 +13,13 @@ public class PasswordService {
     /*
      * Statics
      * */
-    static final List<String> BREACHED_PASSWORDS = List.of("PasswordForJanuary", "PasswordForFebruary", "PasswordForMarch", "PasswordForApril",
-            "PasswordForMay", "PasswordForJune", "PasswordForJuly", "PasswordForAugust",
-            "PasswordForSeptember", "PasswordForOctober", "PasswordForNovember", "PasswordForDecember");
+    static final List<String> BREACHED_PASSWORDS = List.of("PasswordForJanuary", "PasswordForFebruary", "PasswordForMarch", "PasswordForApril", "PasswordForMay", "PasswordForJune", "PasswordForJuly", "PasswordForAugust", "PasswordForSeptember", "PasswordForOctober", "PasswordForNovember", "PasswordForDecember");
     static final int PASSWORD_LENGTH = 12;
 
     /*
      * Attributes
      * */
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     /*
      * Constructors
@@ -32,8 +30,8 @@ public class PasswordService {
 
 
     /*
-    * Methods
-    * */
+     * Methods
+     * */
     @Bean
     public PasswordEncoder getPasswordEncoder() {
         return passwordEncoder;
@@ -52,6 +50,10 @@ public class PasswordService {
 
     }
 
+    public boolean isPreviousPassword(String newPassword, String hash) {
+        return passwordEncoder.matches(newPassword, hash);
+    }
+
     private boolean hasInvalidLength(String password) {
         return password.length() < PASSWORD_LENGTH;
     }
@@ -59,10 +61,5 @@ public class PasswordService {
     private boolean isNotSafe(String password) {
         return BREACHED_PASSWORDS.contains(password);
     }
-
-    public boolean isPreviousPassword(String newPassword, String hash) {
-        return passwordEncoder.matches(newPassword, hash);
-    }
-
 
 }

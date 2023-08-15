@@ -1,4 +1,4 @@
-package account.security;
+package account.authorization;
 
 public enum UserRoleOps {
     GRANT,

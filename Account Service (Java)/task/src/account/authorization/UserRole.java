@@ -1,4 +1,4 @@
-package account.security;
+package account.authorization;
 
 public enum UserRole {
     ROLE_ADMINISTRATOR,

@@ -2,7 +2,7 @@ package account.config;
 
 import account.entity.Group;
 import account.repository.GroupRepository;
-import account.security.UserRole;
+import account.authorization.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

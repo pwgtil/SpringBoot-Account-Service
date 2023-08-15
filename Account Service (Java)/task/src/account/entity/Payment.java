@@ -1,16 +1,16 @@
 package account.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 
 @Entity
 @Table(name = "payments")
 @IdClass(PaymentId.class)
 public class Payment {
+
     /*
-    * Properties
-    * */
+     * Properties
+     * */
     @Id
     @NotEmpty
     private String employee;
@@ -20,9 +20,12 @@ public class Payment {
     private String period;
 
     @Column
-//    @Min(value = 0L, message = "The salary must not be negative")
     private Long salary;
 
+
+    /*
+     * Constructor
+     * */
     public Payment() {
     }
 
@@ -32,28 +35,19 @@ public class Payment {
         this.salary = salary;
     }
 
+    /*
+     * Getters
+     * */
     public String getEmployee() {
         return employee;
-    }
-
-    public void setEmployee(String username) {
-        this.employee = username;
     }
 
     public String getPeriod() {
         return period;
     }
 
-    public void setPeriod(String period) {
-        this.period = period;
-    }
-
     public Long getSalary() {
         return salary;
-    }
-
-    public void setSalary(Long salary) {
-        this.salary = salary;
     }
 
     @Override

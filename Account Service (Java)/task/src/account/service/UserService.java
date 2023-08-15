@@ -1,17 +1,13 @@
 package account.service;
 
 import account.dto.UserDTO;
-import account.entity.Group;
 import account.entity.User;
-import account.repository.GroupRepository;
 import account.repository.UserRepository;
-import account.security.RolesManager;
-import account.security.UserRole;
-import account.security.UserRoleOps;
+import account.authorization.RolesManager;
+import account.authorization.UserRole;
+import account.authorization.UserRoleOps;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -20,9 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Service("userService")
 public class UserService implements UserDetailsService, UserServiceGetInfo {
@@ -31,66 +25,45 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
     private final RolesManager rolesManager;
 
     @Autowired
-    public UserService(UserRepository userRepository,
-                       PasswordService passwordService,
-                       RolesManager rolesManager) {
+    public UserService(UserRepository userRepository, PasswordService passwordService, RolesManager rolesManager) {
         this.userRepository = userRepository;
         this.passwordService = passwordService;
         this.rolesManager = rolesManager;
     }
 
-    public User findUserByEmail(String email) {
+    private User findUserByEmail(String email) {
         return userRepository.findUserByEmailIgnoreCase(email);
     }
 
-    public User findUserByUsername(String username) {
+    private User findUserByUsername(String username) {
         return userRepository.findUserByEmailIgnoreCase(username);
     }
 
-    private User setBaseRole(User user) {
+    private void setBaseRole(User user) {
         if (userRepository.count() == 0) {
-            user.setUserGroups(rolesManager.processRole(
-                    user.getUserGroups(),
-                    UserRole.ROLE_ADMINISTRATOR.name(),
-                    UserRoleOps.GRANT.name()));
+            user.setUserGroups(rolesManager.processRole(user.getUserGroups(), UserRole.ROLE_ADMINISTRATOR.name(), UserRoleOps.GRANT.name()));
         } else {
-            user.setUserGroups(rolesManager.processRole(
-                    user.getUserGroups(),
-                    UserRole.ROLE_USER.name(),
-                    UserRoleOps.GRANT.name()));
+            user.setUserGroups(rolesManager.processRole(user.getUserGroups(), UserRole.ROLE_USER.name(), UserRoleOps.GRANT.name()));
         }
-        return user;
     }
 
-    public User save(User userInput) {
+    private void save(User userInput) {
 
         User dbUser = userRepository.findUserByEmailIgnoreCase(userInput.getEmail());
         if (dbUser != null) {
             userInput.setID(dbUser.getId());
         }
-        return userRepository.save(userInput);
+        userRepository.save(userInput);
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findUserByUsername(username);
         if (user != null) {
-            return org.springframework.security.core.userdetails.User.withUsername(username)
-                    .password(user.getPassword())
-                    .authorities(user.getAuthorities())
-                    .build();
+            return org.springframework.security.core.userdetails.User.withUsername(username).password(user.getPassword()).authorities(user.getAuthorities()).build();
         } else {
             return null;
         }
-    }
-
-    private Collection<GrantedAuthority> getAuthorities(User user) {
-        Set<Group> userGroups = user.getUserGroups();
-        Collection<GrantedAuthority> authorities = new ArrayList<>(userGroups.size());
-        for (Group group : userGroups) {
-            authorities.add(new SimpleGrantedAuthority(group.getCode().toUpperCase()));
-        }
-        return authorities;
     }
 
     public User signUp(User user) {
@@ -108,7 +81,7 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
         }
 
         // Set base role. If first user in DB -> Admin, others Users
-        user = setBaseRole(user);
+        setBaseRole(user);
 
         user.setPassword(passwordService.getPasswordEncoder().encode(user.getPassword()));
 

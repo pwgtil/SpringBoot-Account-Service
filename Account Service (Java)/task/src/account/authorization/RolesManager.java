@@ -1,4 +1,4 @@
-package account.security;
+package account.authorization;
 
 import account.entity.Group;
 import account.repository.GroupRepository;
@@ -14,13 +14,11 @@ import java.util.Set;
 public class RolesManager {
 
     private Set<Group> currentRoles;
-    private Set<Group> allRoles;
     private UserRole role;
     private final GroupRepository groupRepository;
 
     private RolesManager(@Autowired GroupRepository groupRepository) {
         this.groupRepository = groupRepository;
-//        allRoles = (Set<Group>) groupRepository.findAll();
     }
 
     public Set<Group> processRole(Set<Group> currentRoles, @NotNull String role2Process, @NotNull String operation2Process) {
@@ -68,10 +66,7 @@ public class RolesManager {
             }
             case ROLE_ADMINISTRATOR -> {
                 switch (operation) {
-                    case REMOVE -> {
-//                        removeValidation();
-                        removeAdmin();
-                    }
+                    case REMOVE -> removeAdmin();
                     case GRANT -> {
                         grantValidationAdminVSBusinessRoles();
                         grantAdmin();

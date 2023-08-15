@@ -1,5 +1,6 @@
 package account.exception;
 
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
@@ -22,7 +23,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-                                                                  HttpHeaders headers,
+                                                                  @NotNull HttpHeaders headers,
                                                                   HttpStatusCode status,
                                                                   WebRequest request) {
         Map<String, Object> body = new LinkedHashMap<>();
@@ -37,7 +38,7 @@ public class ExceptionHandlerController extends ResponseEntityExceptionHandler {
     }
 
     @Override
-    protected ResponseEntity<Object> handleExceptionInternal(Exception ex, Object body2, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+    protected ResponseEntity<Object> handleExceptionInternal(@NotNull Exception ex, Object body2, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
 
         var e = (ResponseStatusException) ex;
         Map<String, Object> body = new LinkedHashMap<>();
