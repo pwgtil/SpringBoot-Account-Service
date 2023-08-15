@@ -1,5 +1,6 @@
 package account.config;
 
+import account.authorization.UserRole;
 import account.controller.routing.*;
 import account.service.UserService;
 import account.service.PasswordService;
@@ -20,6 +21,10 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig {
+
+    private static final String USER_ROLE = UserRole.ROLE_USER.name();
+    private static final String ACCOUNTANT_ROLE = UserRole.ROLE_ACCOUNTANT.name();
+    private static final String ADMINISTRATOR_ROLE = UserRole.ROLE_ADMINISTRATOR.name();
 
     UserDetailsService userService;
 
@@ -44,14 +49,22 @@ public class WebSecurityConfig {
                 .csrf().ignoringRequestMatchers(toH2Console()).disable()
                 .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, Signup.PATH).permitAll()
-                        .requestMatchers(ChangePass.PATH).authenticated()
-                        .requestMatchers(Payment.PATH).hasAnyRole("USER", "ACCOUNTANT")
-                        .requestMatchers(Payments.PATH).hasRole("ACCOUNTANT")
-                        .requestMatchers(User.PATH, User.PATH + "/*", Role.PATH).hasRole("ADMINISTRATOR")
-                        .requestMatchers(toH2Console()).permitAll()
-                        .requestMatchers("/actuator/shutdown").permitAll()
-                        .requestMatchers("/error").permitAll()
+                        .requestMatchers(HttpMethod.POST, Signup.PATH)
+                            .permitAll()
+                        .requestMatchers(ChangePass.PATH)
+                            .authenticated()
+                        .requestMatchers(Payment.PATH)
+                            .hasAnyAuthority(USER_ROLE, ACCOUNTANT_ROLE)
+                        .requestMatchers(Payments.PATH)
+                            .hasAuthority(ACCOUNTANT_ROLE)
+                        .requestMatchers(User.PATH, User.PATH + "/*", Role.PATH)
+                            .hasAuthority(ADMINISTRATOR_ROLE)
+                        .requestMatchers(toH2Console())
+                            .permitAll()
+                        .requestMatchers("/actuator/shutdown")
+                            .permitAll()
+                        .requestMatchers("/error")
+                            .permitAll()
                         .anyRequest().denyAll())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
