@@ -25,6 +25,7 @@ public class WebSecurityConfig {
     private static final String USER_ROLE = UserRole.ROLE_USER.name();
     private static final String ACCOUNTANT_ROLE = UserRole.ROLE_ACCOUNTANT.name();
     private static final String ADMINISTRATOR_ROLE = UserRole.ROLE_ADMINISTRATOR.name();
+    private static final String AUDITOR_ROLE = UserRole.ROLE_AUDITOR.name();
 
     UserDetailsService userService;
 
@@ -59,6 +60,10 @@ public class WebSecurityConfig {
                             .hasAuthority(ACCOUNTANT_ROLE)
                         .requestMatchers(User.PATH, User.PATH + "/*", Role.PATH)
                             .hasAuthority(ADMINISTRATOR_ROLE)
+                        .requestMatchers(Access.PATH)
+                            .hasAuthority(ADMINISTRATOR_ROLE)
+                        .requestMatchers(Events.PATH)
+                            .hasAuthority(AUDITOR_ROLE)
                         .requestMatchers(toH2Console())
                             .permitAll()
                         .requestMatchers("/actuator/shutdown")

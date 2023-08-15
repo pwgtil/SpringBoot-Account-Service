@@ -1,13 +1,11 @@
 package account.controller;
 
-import account.controller.routing.Role;
-import account.controller.routing.User;
+import account.controller.routing.*;
 import account.dto.RoleOpsDTO;
+import account.dto.response.StatusResponse;
 import account.service.UserService;
 import account.dto.PasswordDTO;
 import account.dto.UserDTO;
-import account.controller.routing.Signup;
-import account.controller.routing.ChangePass;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -65,5 +63,17 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public UserDTO changeUserRoles(@Valid @RequestBody RoleOpsDTO roleOperation) {
         return userService.changeRole(roleOperation.getUser(), roleOperation.getRole(), roleOperation.getOperation());
+    }
+
+    @PutMapping(Access.PATH)
+    @ResponseStatus(HttpStatus.OK)
+    public StatusResponse changeUserAccess() {
+        // TODO(
+        //  1. Add arguments block
+        //  2. Check operation LOCK/UNLOCK
+        //  3. Check if i'm admin
+        //  4. Add EVENT_LOG: LOCK_USER / UNLOCK_USER stuff
+        //  5. Actually change my lock)
+        return new StatusResponse("User user@acme.com locked!");
     }
 }

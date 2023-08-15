@@ -73,6 +73,18 @@ public class RolesManager {
                     }
                 }
             }
+            case ROLE_AUDITOR -> {
+                switch (operation) {
+                    case REMOVE -> {
+                        removeValidation();
+                        removeAuditor();
+                    }
+                    case GRANT -> {
+                        grantValidationAdminVSBusinessRoles();
+                        grantAuditor();
+                    }
+                }
+            }
         }
 
         return this.currentRoles;
@@ -118,6 +130,17 @@ public class RolesManager {
 
     private void removeAccountant() {
         Group group = findRole(UserRole.ROLE_ACCOUNTANT);
+        if (group != null) {
+            currentRoles.remove(group);
+        }
+    }
+
+    private void grantAuditor() {
+        currentRoles.add(groupRepository.findGroupByCode(UserRole.ROLE_AUDITOR.name()));
+    }
+
+    private void removeAuditor() {
+        Group group = findRole(UserRole.ROLE_AUDITOR);
         if (group != null) {
             currentRoles.remove(group);
         }

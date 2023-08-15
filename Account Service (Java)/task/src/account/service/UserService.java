@@ -86,6 +86,7 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
         user.setPassword(passwordService.getPasswordEncoder().encode(user.getPassword()));
 
         save(user);
+        // EVENTLOG: CREATE_USER
 
         return user;
     }
@@ -108,6 +109,8 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
         user.setPassword(passwordService.getPasswordEncoder().encode(password));
 
         save(user);
+
+        // EVENT_LOG: CHANGE_PASSWORD
     }
 
     public List<UserDTO> getAllUsers() {
@@ -127,6 +130,7 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't remove ADMINISTRATOR role!");
         }
         userRepository.delete(user);
+        // EVENT_LOG: DELETE_USER
     }
 
     public UserDTO changeRole(String username, String role, String operation) {
@@ -135,6 +139,7 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
         }
         user.setUserGroups(rolesManager.processRole(user.getUserGroups(), role, operation));
+        // EVENT_LOG: GRANT_ROLE or REMOVE_ROLE
 
         save(user);
 
