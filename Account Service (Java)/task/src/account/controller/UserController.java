@@ -3,7 +3,6 @@ package account.controller;
 import account.controller.routing.Role;
 import account.controller.routing.User;
 import account.dto.RoleOpsDTO;
-import account.dto.response.UserDeletionStatusDTO;
 import account.service.UserService;
 import account.dto.PasswordDTO;
 import account.dto.UserDTO;
@@ -19,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -56,9 +56,9 @@ public class UserController {
 
     @DeleteMapping(User.PATH + "/{email}")
     @ResponseStatus(HttpStatus.OK)
-    public UserDeletionStatusDTO deleteUser(@PathVariable String email) {
+    public Map<String, String> deleteUser(@PathVariable String email) {
         userService.deleteUser(email);
-        return new UserDeletionStatusDTO(email, "Deleted successfully!");
+        return Map.of("user", email, "status", "Deleted successfully!");
     }
 
     @PutMapping(Role.PATH)

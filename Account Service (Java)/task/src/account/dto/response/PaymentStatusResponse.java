@@ -3,21 +3,21 @@ package account.dto.response;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
-public class PaymentStatusDTO implements Comparable<PaymentStatusDTO>{
+public class PaymentStatusResponse implements Comparable<PaymentStatusResponse>{
     private String name;
     private String lastname;
     private String period;
     private String salary;
     private YearMonth yearMonth;
 
-    public PaymentStatusDTO() {
+    public PaymentStatusResponse() {
     }
 
     public String getName() {
         return name;
     }
 
-    public PaymentStatusDTO addName(String name) {
+    public PaymentStatusResponse addName(String name) {
         this.name = name;
         return this;
     }
@@ -26,7 +26,7 @@ public class PaymentStatusDTO implements Comparable<PaymentStatusDTO>{
         return lastname;
     }
 
-    public PaymentStatusDTO addLastname(String lastname) {
+    public PaymentStatusResponse addLastname(String lastname) {
         this.lastname = lastname;
         return this;
     }
@@ -35,7 +35,7 @@ public class PaymentStatusDTO implements Comparable<PaymentStatusDTO>{
         return period;
     }
 
-    public PaymentStatusDTO addPeriod(String period) {
+    public PaymentStatusResponse addPeriod(String period) {
         DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("MM-yyyy");
         DateTimeFormatter FORMATTER2 = DateTimeFormatter.ofPattern("LLLL-yyyy");
         this.yearMonth = YearMonth.parse(period, FORMATTER);
@@ -47,13 +47,13 @@ public class PaymentStatusDTO implements Comparable<PaymentStatusDTO>{
         return salary;
     }
 
-    public PaymentStatusDTO addSalary(Long salary) {
+    public PaymentStatusResponse addSalary(Long salary) {
         this.salary = salary / 100L + " dollar(s) " + salary % 100 + " cent(s)";
         return this;
     }
 
     @Override
-    public int compareTo(PaymentStatusDTO o) {
+    public int compareTo(PaymentStatusResponse o) {
         return o.yearMonth.compareTo(this.yearMonth);
     }
 }

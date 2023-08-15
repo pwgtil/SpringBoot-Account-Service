@@ -2,7 +2,7 @@ package account.controller;
 
 import account.entity.Payment;
 import account.service.PaymentService;
-import account.dto.response.StatusDTO;
+import account.dto.response.StatusResponse;
 import account.controller.routing.Payments;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,22 +27,22 @@ public class PaymentController {
 
     @PostMapping(Payments.PATH)
     @ResponseStatus(HttpStatus.OK)
-    public StatusDTO createPayments(@Valid @RequestBody List<Payment> paymentList) {
+    public StatusResponse createPayments(@Valid @RequestBody List<Payment> paymentList) {
         paymentService.createMultiple(paymentList);
-        return new StatusDTO("Added successfully!");
+        return new StatusResponse("Added successfully!");
     }
 
     @PutMapping(Payments.PATH)
     @ResponseStatus(HttpStatus.OK)
-    public StatusDTO updatePayments(@Valid @RequestBody Payment payment) {
+    public StatusResponse updatePayments(@Valid @RequestBody Payment payment) {
         paymentService.update(payment);
-        return new StatusDTO("Updated successfully!");
+        return new StatusResponse("Updated successfully!");
     }
 
     @GetMapping(account.controller.routing.Payment.PATH)
     public ResponseEntity<?> getPayment(@RequestParam(required = false) String period, @AuthenticationPrincipal UserDetails user) {
         if (user == null) {
-            return new ResponseEntity<>(new StatusDTO("User must login!"), HttpStatus.OK);
+            return new ResponseEntity<>(new StatusResponse("User must login!"), HttpStatus.OK);
         }
 
         if (period != null) {

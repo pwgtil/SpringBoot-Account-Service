@@ -1,6 +1,6 @@
 package account.service;
 
-import account.dto.response.PaymentStatusDTO;
+import account.dto.response.PaymentStatusResponse;
 import account.entity.Payment;
 import account.repository.PaymentRepository;
 import jakarta.validation.constraints.NotNull;
@@ -44,23 +44,23 @@ public class PaymentService {
         }
     }
 
-    public PaymentStatusDTO getPaymentDetails(String period, UserDetails userDetail) {
+    public PaymentStatusResponse getPaymentDetails(String period, UserDetails userDetail) {
         Payment payment = getPayment(userDetail.getUsername(), period).orElseThrow(
                 () -> new ResponseStatusException(HttpStatus.BAD_REQUEST, period + " not found in the DB for user: " + userDetail.getUsername())
         );
         UserGetInfo user = userServiceGetInfo.getUserInfo(userDetail.getUsername());
-        return new PaymentStatusDTO()
+        return new PaymentStatusResponse()
                 .addName(user.getName())
                 .addLastname(user.getLastname())
                 .addPeriod(period)
                 .addSalary(payment.getSalary());
     }
 
-    public List<PaymentStatusDTO> getAllPaymentDetails(UserDetails userDetail) {
+    public List<PaymentStatusResponse> getAllPaymentDetails(UserDetails userDetail) {
         List<Payment> paymentList = paymentRepository.findByEmployee(userDetail.getUsername());
         UserGetInfo user = userServiceGetInfo.getUserInfo(userDetail.getUsername());
         return paymentList.stream().map(payment ->
-                        new PaymentStatusDTO()
+                        new PaymentStatusResponse()
                                 .addName(user.getName())
                                 .addLastname(user.getLastname())
                                 .addPeriod(payment.getPeriod())
