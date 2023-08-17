@@ -10,7 +10,7 @@ import java.io.IOException;
 public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
-        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Access Denied!");
+        response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());//"Access Denied!");
         // EVENT_LOG: LOGIN_FAILED
     }
 }

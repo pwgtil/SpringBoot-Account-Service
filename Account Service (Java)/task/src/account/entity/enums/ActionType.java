@@ -7,8 +7,8 @@ public enum ActionType {
     LOGIN_FAILED,       // Failed authentication                                            -> RestAuthenticationEntryPoint.commence()
     GRANT_ROLE,         // A role is granted to a user                                      -> UserService.changeRole()
     REMOVE_ROLE,        // A role has been revoked                                          -> UserService.changeRole()
-    LOCK_USER,          // The Administrator has locked the user                            -> TODO()
-    UNLOCK_USER,        // The Administrator has unlocked a user                            -> TODO()
+    LOCK_USER,          // The Administrator has locked the user                            -> UserService.changeAccess()
+    UNLOCK_USER,        // The Administrator has unlocked a user                            -> UserService.changeAccess()
     DELETE_USER,        // The Administrator has deleted a user                             -> UserService.deleteUser()
     BRUTE_FORCE         // A user has been blocked on suspicion of a brute force attack     -> TODO()
 }

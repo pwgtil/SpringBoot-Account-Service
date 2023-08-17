@@ -1,11 +1,12 @@
 package account.service;
 
-import account.dto.UserDTO;
-import account.entity.User;
-import account.repository.UserRepository;
 import account.authorization.RolesManager;
 import account.authorization.UserRole;
 import account.authorization.UserRoleOps;
+import account.dto.AccessOpsDTO;
+import account.dto.UserDTO;
+import account.entity.User;
+import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,7 +26,9 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
     private final RolesManager rolesManager;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordService passwordService, RolesManager rolesManager) {
+    public UserService(UserRepository userRepository,
+                       PasswordService passwordService,
+                       RolesManager rolesManager) {
         this.userRepository = userRepository;
         this.passwordService = passwordService;
         this.rolesManager = rolesManager;
@@ -60,7 +63,12 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = findUserByUsername(username);
         if (user != null) {
-            return org.springframework.security.core.userdetails.User.withUsername(username).password(user.getPassword()).authorities(user.getAuthorities()).build();
+            return org.springframework.security.core.userdetails.User
+                    .withUsername(username)
+                    .password(user.getPassword())
+                    .authorities(user.getAuthorities())
+                    .accountLocked(!user.isAccountNonLocked())
+                    .build();
         } else {
             return null;
         }
@@ -86,7 +94,6 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
         user.setPassword(passwordService.getPasswordEncoder().encode(user.getPassword()));
 
         save(user);
-        // EVENTLOG: CREATE_USER
 
         return user;
     }
@@ -109,8 +116,6 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
         user.setPassword(passwordService.getPasswordEncoder().encode(password));
 
         save(user);
-
-        // EVENT_LOG: CHANGE_PASSWORD
     }
 
     public List<UserDTO> getAllUsers() {
@@ -130,7 +135,6 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't remove ADMINISTRATOR role!");
         }
         userRepository.delete(user);
-        // EVENT_LOG: DELETE_USER
     }
 
     public UserDTO changeRole(String username, String role, String operation) {
@@ -139,11 +143,40 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
         }
         user.setUserGroups(rolesManager.processRole(user.getUserGroups(), role, operation));
-        // EVENT_LOG: GRANT_ROLE or REMOVE_ROLE
 
         save(user);
 
         return UserDTO.convertUserToDTO(user);
+    }
+
+    public void changeAccess(AccessOpsDTO accessOpsDTO) {
+        String operation = validateAccessOperation(accessOpsDTO.getOperation());
+        if (operation == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect operation. Should be LOCK or UNLOCK");
+        }
+        User user = findUserByUsername(accessOpsDTO.getUser());
+        if (user == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
+        }
+        if (rolesManager.isAdministrator(user.getUserGroups())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Can't lock the ADMINISTRATOR!");
+        }
+
+        switch (operation) {
+            case "LOCK" -> user.setAccountNonLocked(false);
+            case "UNLOCK" -> user.setAccountNonLocked(true);
+        }
+
+        save(user);
+    }
+
+    private String validateAccessOperation(String operation) {
+        operation = operation.toUpperCase();
+        if (List.of("LOCK", "UNLOCK").contains(operation)) {
+            return operation;
+        } else {
+            return null;
+        }
     }
 
     @Override

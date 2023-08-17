@@ -1,5 +1,6 @@
 package account.entity;
 
+import account.authorization.UserRole;
 import account.service.UserGetInfo;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -33,6 +34,9 @@ public class User implements UserDetails, UserGetInfo {
 
     @Column(name = "password")
     private String password;
+
+    @Column(name = "account_non_locked")
+    private boolean accountNonLocked = true;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "user_groups", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
@@ -70,6 +74,10 @@ public class User implements UserDetails, UserGetInfo {
 
     public void setID(Long id) {
         this.id = id;
+    }
+
+    public void setAccountNonLocked(boolean accountNonLocked) {
+        this.accountNonLocked = accountNonLocked;
     }
 
     public Long getId() {
@@ -115,7 +123,7 @@ public class User implements UserDetails, UserGetInfo {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return this.accountNonLocked;
     }
 
     @Override
@@ -132,4 +140,5 @@ public class User implements UserDetails, UserGetInfo {
     public String toString() {
         return "User{" + "id=" + id + ", name='" + name + '\'' + ", lastname='" + lastname + '\'' + ", password='" + password + '\'' + ", email='" + email + '\'' + '}';
     }
+
 }

@@ -2,6 +2,7 @@ package account.config;
 
 import account.authorization.UserRole;
 import account.controller.routing.*;
+import account.service.EventLogServicePostEvent;
 import account.service.UserService;
 import account.service.PasswordService;
 import jakarta.validation.constraints.NotNull;
@@ -42,7 +43,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, @Autowired EventLogServicePostEvent eventLogService) throws Exception {
         return http
                 .httpBasic()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
@@ -62,7 +63,7 @@ public class WebSecurityConfig {
                             .hasAuthority(ADMINISTRATOR_ROLE)
                         .requestMatchers(Access.PATH)
                             .hasAuthority(ADMINISTRATOR_ROLE)
-                        .requestMatchers(Events.PATH)
+                        .requestMatchers(Events.PATH, Events.PATH + "/*")
                             .hasAuthority(AUDITOR_ROLE)
                         .requestMatchers(toH2Console())
                             .permitAll()
@@ -75,10 +76,14 @@ public class WebSecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
-                .accessDeniedHandler(new CustomAccessDeniedHandler())
+                .accessDeniedHandler(getCustomAccessDeniedHandler(eventLogService))
 //                .accessDeniedPage("/accessDenied.jsp")
                 .and()
                 .build();
+    }
+
+    private CustomAccessDeniedHandler getCustomAccessDeniedHandler(EventLogServicePostEvent eventLogService) {
+        return new CustomAccessDeniedHandler(eventLogService);
     }
 
     public WebSecurityConfig(@Autowired UserService userService) {
