@@ -38,6 +38,9 @@ public class User implements UserDetails, UserGetInfo {
     @Column(name = "account_non_locked")
     private boolean accountNonLocked = true;
 
+    @Column(name = "failed_attempts")
+    private int failedAttempts = 0;
+
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(name = "user_groups", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
     private Set<Group> userGroups = new HashSet<>();
@@ -80,6 +83,10 @@ public class User implements UserDetails, UserGetInfo {
         this.accountNonLocked = accountNonLocked;
     }
 
+    public void setFailedAttempts(int failedAttempts) {
+        this.failedAttempts = failedAttempts;
+    }
+
     public Long getId() {
         return id;
     }
@@ -104,6 +111,10 @@ public class User implements UserDetails, UserGetInfo {
     @Override
     public String getUsername() {
         return this.getEmail();
+    }
+
+    public int getFailedAttempts() {
+        return failedAttempts;
     }
 
     @Override
@@ -140,5 +151,4 @@ public class User implements UserDetails, UserGetInfo {
     public String toString() {
         return "User{" + "id=" + id + ", name='" + name + '\'' + ", lastname='" + lastname + '\'' + ", password='" + password + '\'' + ", email='" + email + '\'' + '}';
     }
-
 }

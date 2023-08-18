@@ -46,7 +46,7 @@ public class WebSecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http, @Autowired EventLogServicePostEvent eventLogService) throws Exception {
         return http
                 .httpBasic()
-                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .authenticationEntryPoint(getAuthenticationEntryPoint(eventLogService))
                 .and()
                 .csrf().ignoringRequestMatchers(toH2Console()).disable()
                 .headers(headers -> headers.frameOptions().disable())
@@ -80,6 +80,11 @@ public class WebSecurityConfig {
 //                .accessDeniedPage("/accessDenied.jsp")
                 .and()
                 .build();
+    }
+
+    @Bean
+    private static RestAuthenticationEntryPoint getAuthenticationEntryPoint(EventLogServicePostEvent eventLogService) {
+        return new RestAuthenticationEntryPoint(eventLogService);
     }
 
     private CustomAccessDeniedHandler getCustomAccessDeniedHandler(EventLogServicePostEvent eventLogService) {

@@ -29,12 +29,15 @@ public class EventLogService implements EventLogServicePostEvent, EventLogServic
         eventLog.setDate(LocalDateTime.now());
         eventLog.setAction(action);
         eventLog.setSubject(subject);
-        eventLog.setObject(object);
 
         if (path == null || path.isEmpty()) {
             path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString()
                     .substring(ServletUriComponentsBuilder.fromCurrentServletMapping().toUriString().length());
+            if (object == null || object.isEmpty()) {
+                object = path;
+            }
         }
+        eventLog.setObject(object);
         eventLog.setPath(path);
         eventLogRepository.save(eventLog);
     }

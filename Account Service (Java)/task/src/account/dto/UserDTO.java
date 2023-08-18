@@ -7,7 +7,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class UserDTO {
 
@@ -56,7 +58,7 @@ public class UserDTO {
         this.lastname = lastname;
         this.email = email;
         this.password = password;
-        this.roles = roles;
+        this.roles = roles.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public UserDTO() {

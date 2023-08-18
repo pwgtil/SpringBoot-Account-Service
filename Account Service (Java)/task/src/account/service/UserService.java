@@ -3,7 +3,6 @@ package account.service;
 import account.authorization.RolesManager;
 import account.authorization.UserRole;
 import account.authorization.UserRoleOps;
-import account.dto.AccessOpsDTO;
 import account.dto.UserDTO;
 import account.entity.User;
 import account.repository.UserRepository;
@@ -13,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.InvalidParameterException;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service("userService")
-public class UserService implements UserDetailsService, UserServiceGetInfo {
+public class UserService implements UserDetailsService, UserServiceGetInfo, UserServiceChangeAccess {
     private final UserRepository userRepository;
     private final PasswordService passwordService;
     private final RolesManager rolesManager;
@@ -149,12 +149,13 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
         return UserDTO.convertUserToDTO(user);
     }
 
-    public void changeAccess(AccessOpsDTO accessOpsDTO) {
-        String operation = validateAccessOperation(accessOpsDTO.getOperation());
+    @Override
+    public void changeAccess(String username, String operation) {
+        operation = validateAccessOperation(operation);
         if (operation == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Incorrect operation. Should be LOCK or UNLOCK");
         }
-        User user = findUserByUsername(accessOpsDTO.getUser());
+        User user = findUserByUsername(username);
         if (user == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!");
         }
@@ -169,6 +170,18 @@ public class UserService implements UserDetailsService, UserServiceGetInfo {
 
         save(user);
     }
+
+    @Override
+    public int getFailedLoginAttempts(String username) {
+        return userRepository.getFailedAttempts(username);
+    }
+
+    @Override
+    @Transactional
+    public void setFailedLoginAttempts(int failedAttempts, String username) {
+        userRepository.setFailedAttempts(failedAttempts, username);
+    }
+
 
     private String validateAccessOperation(String operation) {
         operation = operation.toUpperCase();

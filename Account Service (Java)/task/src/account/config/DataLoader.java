@@ -19,10 +19,10 @@ public class DataLoader {
 
     private void createRoles() {
         try {
-            groupRepository.save(new Group(UserRole.ROLE_ADMINISTRATOR.name()));
-            groupRepository.save(new Group(UserRole.ROLE_USER.name()));
             groupRepository.save(new Group(UserRole.ROLE_ACCOUNTANT.name()));
+            groupRepository.save(new Group(UserRole.ROLE_ADMINISTRATOR.name()));
             groupRepository.save(new Group(UserRole.ROLE_AUDITOR.name()));
+            groupRepository.save(new Group(UserRole.ROLE_USER.name()));
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }

@@ -89,7 +89,7 @@ public class UserController {
     @PutMapping(Access.PATH)
     @ResponseStatus(HttpStatus.OK)
     public StatusResponse changeUserAccess(@Valid @RequestBody AccessOpsDTO accessOpsDTO, @AuthenticationPrincipal UserDetails details) {
-        userService.changeAccess(accessOpsDTO);
+        userService.changeAccess(accessOpsDTO.getUser(), accessOpsDTO.getOperation());
 
         // EVENT_LOG: LOCK_USER, UNLOCK_USER
         switch (accessOpsDTO.getOperation().toUpperCase()) {
@@ -97,6 +97,7 @@ public class UserController {
                 eventLogService.postEvent(ActionType.LOCK_USER, details.getUsername(), "Lock user " + accessOpsDTO.getUser(), Access.PATH);
             }
             case "UNLOCK" -> {
+                userService.setFailedLoginAttempts(0, accessOpsDTO.getUser());
                 eventLogService.postEvent(ActionType.UNLOCK_USER, details.getUsername(), "Unlock user " + accessOpsDTO.getUser(), Access.PATH);
             }
         }
