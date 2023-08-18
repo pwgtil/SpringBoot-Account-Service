@@ -21,6 +21,6 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
         response.sendError(HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage());//"Access Denied!");
         // EVENT_LOG: LOGIN_FAILED
-        eventLogService.postEvent(ActionType.LOGIN_FAILED, request.getRemoteUser(), request.getServletPath(), request.getServletPath());
+//        eventLogService.postEvent(ActionType.LOGIN_FAILED, request.getRemoteUser(), request.getServletPath(), request.getServletPath());
     }
 }

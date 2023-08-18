@@ -18,7 +18,7 @@ public class EventLogController {
         this.eventLogService = eventLogService;
     }
 
-    @GetMapping(Events.PATH)
+    @GetMapping(Events.PATH + "/")
     @ResponseStatus(HttpStatus.OK)
     public List<EventLog> getEvents() {
         return eventLogService.getAllEvents();

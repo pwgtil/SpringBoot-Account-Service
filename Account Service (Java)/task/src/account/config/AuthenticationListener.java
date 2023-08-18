@@ -44,16 +44,17 @@ public class AuthenticationListener implements ApplicationListener<AbstractAuthe
         }
         int failedAttempts = userServiceChangeAccess.getFailedLoginAttempts(username);
         if (event instanceof AuthenticationFailureBadCredentialsEvent) {
+            eventLogServicePostEvent.postEvent(ActionType.LOGIN_FAILED, username, "", "");
             if (failedAttempts >= MAX_FAILED_ATTEMPTS) {
                 // EVENT_LOG: BRUTE_FORCE
                 eventLogServicePostEvent.postEvent(ActionType.BRUTE_FORCE, username, "", "");
                 try {
                     userServiceChangeAccess.changeAccess(username, "LOCK");
+                    // EVENT_LOG: LOCK_USER
+                    eventLogServicePostEvent.postEvent(ActionType.LOCK_USER, username, "Lock user " + username, "");
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage());
                 }
-                // EVENT_LOG: LOCK_USER
-                eventLogServicePostEvent.postEvent(ActionType.LOCK_USER, username, "Lock user " + username, "");
             }
             userServiceChangeAccess.setFailedLoginAttempts(failedAttempts + 1, username);
         } else if (event instanceof AuthenticationSuccessEvent){

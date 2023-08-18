@@ -22,7 +22,7 @@ public class UserDTO {
             for (Group group : user.getUserGroups()) {
                 roles.add(group.getCode());
             }
-            return new UserDTO(user.getId(), user.getName(), user.getLastname(), user.getEmail(), user.getPassword(), roles);
+            return new UserDTO(user.getId(), user.getName(), user.getLastname(), user.getEmail().toLowerCase(), user.getPassword(), roles);
         } else return null;
     }
 

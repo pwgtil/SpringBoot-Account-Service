@@ -5,6 +5,7 @@ import account.authorization.UserRole;
 import account.authorization.UserRoleOps;
 import account.dto.UserDTO;
 import account.entity.User;
+import account.entity.enums.ActionType;
 import account.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,14 +25,14 @@ public class UserService implements UserDetailsService, UserServiceGetInfo, User
     private final UserRepository userRepository;
     private final PasswordService passwordService;
     private final RolesManager rolesManager;
+    private final EventLogServicePostEvent eventLogService;
 
     @Autowired
-    public UserService(UserRepository userRepository,
-                       PasswordService passwordService,
-                       RolesManager rolesManager) {
+    public UserService(UserRepository userRepository, PasswordService passwordService, RolesManager rolesManager, EventLogServicePostEvent eventLogService) {
         this.userRepository = userRepository;
         this.passwordService = passwordService;
         this.rolesManager = rolesManager;
+        this.eventLogService = eventLogService;
     }
 
     private User findUserByEmail(String email) {
@@ -70,6 +71,7 @@ public class UserService implements UserDetailsService, UserServiceGetInfo, User
                     .accountLocked(!user.isAccountNonLocked())
                     .build();
         } else {
+            eventLogService.postEvent(ActionType.LOGIN_FAILED, username, "", "");
             return null;
         }
     }
@@ -77,7 +79,7 @@ public class UserService implements UserDetailsService, UserServiceGetInfo, User
     public User signUp(User user) {
 
         // Basic check if exists in DB
-        if (loadUserByUsername(user.getEmail()) != null) {
+        if (findUserByUsername(user.getEmail()) != null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User exist!");
         }
 

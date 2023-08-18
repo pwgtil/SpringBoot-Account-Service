@@ -17,4 +17,8 @@ public class AccessOpsDTO {
 
     @NotEmpty(message = "Operation cannot be empty (LOCK or UNLOCK)")
     private String operation;
+
+    public String getUser() {
+        return this.user.toLowerCase();
+    }
 }
