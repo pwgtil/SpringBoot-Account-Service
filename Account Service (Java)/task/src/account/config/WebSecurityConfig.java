@@ -61,7 +61,7 @@ public class WebSecurityConfig {
                             .hasAuthority(ACCOUNTANT_ROLE)
                         .requestMatchers(User.PATH, User.PATH + "/*", Role.PATH)
                             .hasAuthority(ADMINISTRATOR_ROLE)
-                        .requestMatchers(Access.PATH, Access.PATH + "/*")
+                        .requestMatchers(Access.PATH)
                             .hasAuthority(ADMINISTRATOR_ROLE)
                         .requestMatchers(Events.PATH, Events.PATH + "/*")
                             .hasAuthority(AUDITOR_ROLE)

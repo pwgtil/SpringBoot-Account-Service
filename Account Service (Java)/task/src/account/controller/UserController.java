@@ -86,7 +86,7 @@ public class UserController {
         return userDTO;
     }
 
-    @PutMapping(Access.PATH +"/")
+    @PutMapping(Access.PATH)
     @ResponseStatus(HttpStatus.OK)
     public StatusResponse changeUserAccess(@Valid @RequestBody AccessOpsDTO accessOpsDTO, @AuthenticationPrincipal UserDetails details) {
         userService.changeAccess(accessOpsDTO.getUser(), accessOpsDTO.getOperation());
