@@ -7,18 +7,16 @@ import account.service.UserServiceChangeAccess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.observation.ObservationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 
 @Component
-public class AuthenticationListener implements ApplicationListener<AbstractAuthenticationEvent>{
+public class AuthenticationListener implements ApplicationListener<AbstractAuthenticationEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExceptionHandlerController.class);
 
@@ -26,15 +24,22 @@ public class AuthenticationListener implements ApplicationListener<AbstractAuthe
 
     final EventLogServicePostEvent eventLogServicePostEvent;
     final UserServiceChangeAccess userServiceChangeAccess;
+    final int maxFailedAttempts;
 
     @Autowired
-    public AuthenticationListener(EventLogServicePostEvent eventLogServicePostEvent, UserServiceChangeAccess userServiceChangeAccess) {
+    public AuthenticationListener(
+            EventLogServicePostEvent eventLogServicePostEvent,
+            UserServiceChangeAccess userServiceChangeAccess,
+            @Value("${login.max-failed-attempts}") int maxFailedAttempts
+    ) {
         this.eventLogServicePostEvent = eventLogServicePostEvent;
         this.userServiceChangeAccess = userServiceChangeAccess;
+        this.maxFailedAttempts = maxFailedAttempts;
     }
 
     @Override
     public void onApplicationEvent(AbstractAuthenticationEvent event) {
+
         Object user = event.getAuthentication().getPrincipal();
         String username;
         if (user instanceof UserDetails) {
@@ -57,9 +62,9 @@ public class AuthenticationListener implements ApplicationListener<AbstractAuthe
                 }
             }
             userServiceChangeAccess.setFailedLoginAttempts(failedAttempts + 1, username);
-        } else if (event instanceof AuthenticationSuccessEvent){
+        } else if (event instanceof AuthenticationSuccessEvent) {
             if (failedAttempts > 0) {
-                userServiceChangeAccess.setFailedLoginAttempts(0 , username);
+                userServiceChangeAccess.setFailedLoginAttempts(0, username);
             }
         }
     }

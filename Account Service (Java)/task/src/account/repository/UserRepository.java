@@ -13,7 +13,7 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     @Query("UPDATE User u SET u.failedAttempts = :failedAttempts WHERE u.email = :username")
     @Modifying
-    public void setFailedAttempts(@Param("failedAttempts") int failedAttempts, @Param("username") String username);
+    public int setFailedAttempts(@Param("failedAttempts") int failedAttempts, @Param("username") String username);
 
     @Query("SELECT u.failedAttempts from User u where u.email = :username")
     public int getFailedAttempts(@Param("username") String username);

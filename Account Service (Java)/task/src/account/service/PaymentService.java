@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @Service
 public class PaymentService {
     private final PaymentRepository paymentRepository;
-
     private final UserServiceGetInfo userServiceGetInfo;
 
     public PaymentService(@Autowired PaymentRepository paymentRepository, @Autowired UserServiceGetInfo userServiceGetInfo) {

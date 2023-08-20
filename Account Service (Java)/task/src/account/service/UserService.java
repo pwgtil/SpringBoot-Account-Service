@@ -181,7 +181,7 @@ public class UserService implements UserDetailsService, UserServiceGetInfo, User
     @Override
     @Transactional
     public void setFailedLoginAttempts(int failedAttempts, String username) {
-        userRepository.setFailedAttempts(failedAttempts, username);
+        int updatedRecords = userRepository.setFailedAttempts(failedAttempts, username);
     }
 
 

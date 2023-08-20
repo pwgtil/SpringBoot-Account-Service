@@ -1,5 +1,7 @@
 package account.service;
 
+import account.exception.BreachedPasswordException;
+import account.exception.TooShortPasswordException;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -41,11 +43,11 @@ public class PasswordService {
 
         // Check length
         if (hasInvalidLength(password)) {
-            throw new InvalidParameterException("The password length must be at least 12 chars!");
+            throw new TooShortPasswordException();
         }
         // Check if in hacker database
         if (isNotSafe(password)) {
-            throw new InvalidParameterException("The password is in the hacker's database!");
+            throw new BreachedPasswordException();
         }
 
     }

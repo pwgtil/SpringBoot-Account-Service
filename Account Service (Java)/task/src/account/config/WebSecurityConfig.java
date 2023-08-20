@@ -28,70 +28,66 @@ public class WebSecurityConfig {
     private static final String ADMINISTRATOR_ROLE = UserRole.ROLE_ADMINISTRATOR.name();
     private static final String AUDITOR_ROLE = UserRole.ROLE_AUDITOR.name();
 
-    UserDetailsService userService;
+    private final UserDetailsService userService;
+    private final RestAuthenticationEntryPoint restAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
-    public void configure(@Autowired @NotNull AuthenticationManagerBuilder auth, @Autowired PasswordService passwordService) throws Exception {
-        auth
-                .userDetailsService(userService)
-                .passwordEncoder(passwordService.getPasswordEncoder());
-//                .and()
-//
-//                .inMemoryAuthentication()
-//                .withUser("admin").password("admin").roles("ADMIN");
-                //.and().passwordEncoder(NoOpPasswordEncoder.getInstance());
-
+    @Autowired
+    public WebSecurityConfig(UserDetailsService userService, RestAuthenticationEntryPoint restAuthenticationEntryPoint, CustomAccessDeniedHandler customAccessDeniedHandler) {
+        this.userService = userService;
+        this.restAuthenticationEntryPoint = restAuthenticationEntryPoint;
+        this.customAccessDeniedHandler = customAccessDeniedHandler;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, @Autowired EventLogServicePostEvent eventLogService) throws Exception {
         return http
                 .httpBasic()
-                .authenticationEntryPoint(getAuthenticationEntryPoint(eventLogService))
+                .authenticationEntryPoint(restAuthenticationEntryPoint)
                 .and()
                 .csrf().ignoringRequestMatchers(toH2Console()).disable()
                 .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.POST, Signup.PATH)
-                            .permitAll()
+                        .permitAll()
                         .requestMatchers(ChangePass.PATH)
-                            .authenticated()
+                        .authenticated()
                         .requestMatchers(Payment.PATH)
-                            .hasAnyAuthority(USER_ROLE, ACCOUNTANT_ROLE)
+                        .hasAnyAuthority(USER_ROLE, ACCOUNTANT_ROLE)
                         .requestMatchers(Payments.PATH)
-                            .hasAuthority(ACCOUNTANT_ROLE)
+                        .hasAuthority(ACCOUNTANT_ROLE)
                         .requestMatchers(User.PATH, User.PATH + "/*", Role.PATH)
-                            .hasAuthority(ADMINISTRATOR_ROLE)
+                        .hasAuthority(ADMINISTRATOR_ROLE)
                         .requestMatchers(Access.PATH)
-                            .hasAuthority(ADMINISTRATOR_ROLE)
+                        .hasAuthority(ADMINISTRATOR_ROLE)
                         .requestMatchers(Events.PATH, Events.PATH + "/*")
-                            .hasAuthority(AUDITOR_ROLE)
+                        .hasAuthority(AUDITOR_ROLE)
                         .requestMatchers(toH2Console())
-                            .permitAll()
+                        .permitAll()
                         .requestMatchers("/actuator/shutdown")
-                            .permitAll()
+                        .permitAll()
                         .requestMatchers("/error")
-                            .permitAll()
+                        .permitAll()
                         .anyRequest().denyAll())
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
-                .accessDeniedHandler(getCustomAccessDeniedHandler(eventLogService))
+                .accessDeniedHandler(customAccessDeniedHandler)
 //                .accessDeniedPage("/accessDenied.jsp")
                 .and()
                 .build();
     }
 
-    @Bean
-    private static RestAuthenticationEntryPoint getAuthenticationEntryPoint(EventLogServicePostEvent eventLogService) {
-        return new RestAuthenticationEntryPoint(eventLogService);
+    public void configure(@Autowired @NotNull AuthenticationManagerBuilder auth, @Autowired PasswordService passwordService) throws Exception {
+        auth
+                .userDetailsService(userService)
+                .passwordEncoder(passwordService.getPasswordEncoder());
+//                .and()
+//                .inMemoryAuthentication()
+//                .withUser("admin").password("admin").roles("ADMIN");
+//                .and().passwordEncoder(NoOpPasswordEncoder.getInstance());
+
     }
 
-    private CustomAccessDeniedHandler getCustomAccessDeniedHandler(EventLogServicePostEvent eventLogService) {
-        return new CustomAccessDeniedHandler(eventLogService);
-    }
-
-    public WebSecurityConfig(@Autowired UserService userService) {
-        this.userService = userService;
-    }
 }
