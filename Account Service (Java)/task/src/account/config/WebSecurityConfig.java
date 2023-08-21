@@ -2,8 +2,6 @@ package account.config;
 
 import account.authorization.UserRole;
 import account.controller.routing.*;
-import account.service.EventLogServicePostEvent;
-import account.service.UserService;
 import account.service.PasswordService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,7 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, @Autowired EventLogServicePostEvent eventLogService) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .httpBasic()
                 .authenticationEntryPoint(restAuthenticationEntryPoint)

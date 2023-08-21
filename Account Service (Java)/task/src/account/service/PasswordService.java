@@ -15,17 +15,11 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.security.InvalidParameterException;
 import java.util.List;
 
 @Slf4j
 @Service
 public class PasswordService {
-    /*
-     * Statics
-     * */
-    static final List<String> BREACHED_PASSWORDS = List.of();
-    static final int PASSWORD_LENGTH = 12;
 
     /*
      * Attributes

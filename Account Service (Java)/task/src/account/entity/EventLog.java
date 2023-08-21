@@ -2,8 +2,10 @@ package account.entity;
 
 import account.entity.enums.ActionType;
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -42,13 +44,6 @@ public class EventLog {
         this.date = date;
         this.action = action;
         this.subject = subject;
-        this.object = object;
-        this.path = path;
-    }
-
-    public EventLog(LocalDateTime date, ActionType action, String object, String path) {
-        this.date = date;
-        this.action = action;
         this.object = object;
         this.path = path;
     }

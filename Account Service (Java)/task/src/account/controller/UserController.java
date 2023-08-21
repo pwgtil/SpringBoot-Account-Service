@@ -2,19 +2,18 @@ package account.controller;
 
 import account.controller.routing.*;
 import account.dto.AccessOpsDTO;
+import account.dto.PasswordDTO;
 import account.dto.RoleOpsDTO;
+import account.dto.UserDTO;
 import account.dto.response.StatusResponse;
 import account.entity.enums.ActionType;
 import account.service.EventLogServicePostEvent;
 import account.service.UserService;
-import account.dto.PasswordDTO;
-import account.dto.UserDTO;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -93,9 +92,7 @@ public class UserController {
 
         // EVENT_LOG: LOCK_USER, UNLOCK_USER
         switch (accessOpsDTO.getOperation().toUpperCase()) {
-            case "LOCK" -> {
-                eventLogService.postEvent(ActionType.LOCK_USER, details.getUsername(), "Lock user " + accessOpsDTO.getUser(), Access.PATH);
-            }
+            case "LOCK" -> eventLogService.postEvent(ActionType.LOCK_USER, details.getUsername(), "Lock user " + accessOpsDTO.getUser(), Access.PATH);
             case "UNLOCK" -> {
                 userService.setFailedLoginAttempts(0, accessOpsDTO.getUser());
                 eventLogService.postEvent(ActionType.UNLOCK_USER, details.getUsername(), "Unlock user " + accessOpsDTO.getUser(), Access.PATH);

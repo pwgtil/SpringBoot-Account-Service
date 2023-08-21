@@ -13,8 +13,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("UPDATE User u SET u.failedAttempts = :failedAttempts WHERE u.email = :username")
     @Modifying
-    public int setFailedAttempts(@Param("failedAttempts") int failedAttempts, @Param("username") String username);
+    int setFailedAttempts(@Param("failedAttempts") int failedAttempts, @Param("username") String username);
 
     @Query("SELECT u.failedAttempts from User u where u.email = :username")
-    public int getFailedAttempts(@Param("username") String username);
+    int getFailedAttempts(@Param("username") String username);
 }
