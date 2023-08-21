@@ -1,8 +1,15 @@
 package account.dto.response;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentStatusResponse implements Comparable<PaymentStatusResponse>{
     private String name;
     private String lastname;
@@ -10,29 +17,14 @@ public class PaymentStatusResponse implements Comparable<PaymentStatusResponse>{
     private String salary;
     private YearMonth yearMonth;
 
-    public PaymentStatusResponse() {
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public PaymentStatusResponse addName(String name) {
         this.name = name;
         return this;
     }
 
-    public String getLastname() {
-        return lastname;
-    }
-
     public PaymentStatusResponse addLastname(String lastname) {
         this.lastname = lastname;
         return this;
-    }
-
-    public String getPeriod() {
-        return period;
     }
 
     public PaymentStatusResponse addPeriod(String period) {
@@ -43,9 +35,6 @@ public class PaymentStatusResponse implements Comparable<PaymentStatusResponse>{
         return this;
     }
 
-    public String getSalary() {
-        return salary;
-    }
 
     public PaymentStatusResponse addSalary(Long salary) {
         this.salary = salary / 100L + " dollar(s) " + salary % 100 + " cent(s)";

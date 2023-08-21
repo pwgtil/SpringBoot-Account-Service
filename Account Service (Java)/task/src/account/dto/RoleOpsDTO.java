@@ -1,7 +1,11 @@
 package account.dto;
 
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@Getter
 public class RoleOpsDTO {
 
     @NotEmpty(message = "Email cannot be empty (it's your username!)")
@@ -20,19 +24,12 @@ public class RoleOpsDTO {
         setOperation(operation);
     }
 
-    public RoleOpsDTO() {
-    }
-
     public String getUser() {
         return user.toLowerCase();
     }
 
     public void setUser(String user) {
         this.user = user;
-    }
-
-    public String getRole() {
-        return role;
     }
 
     public void setRole(String role) {
@@ -42,10 +39,6 @@ public class RoleOpsDTO {
             role = "ROLE_" + role;
         }
         this.role = role;
-    }
-
-    public String getOperation() {
-        return operation;
     }
 
     public void setOperation(String operation) {

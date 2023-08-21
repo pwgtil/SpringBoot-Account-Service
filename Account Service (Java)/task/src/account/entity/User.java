@@ -1,8 +1,9 @@
 package account.entity;
 
-import account.authorization.UserRole;
 import account.service.UserGetInfo;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,6 +16,8 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
+@Getter
+@NoArgsConstructor
 public class User implements UserDetails, UserGetInfo {
     /*
      * Properties
@@ -55,17 +58,9 @@ public class User implements UserDetails, UserGetInfo {
         this.password = password;
     }
 
-    public User() {
-
-    }
-
     /*
      * Getters, Setters
      * */
-
-    public Set<Group> getUserGroups() {
-        return userGroups;
-    }
 
     public void setUserGroups(Set<Group> userGroups) {
         this.userGroups = userGroups;
@@ -87,22 +82,6 @@ public class User implements UserDetails, UserGetInfo {
         this.failedAttempts = failedAttempts;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
     @Override
     public String getPassword() {
         return password;
@@ -111,10 +90,6 @@ public class User implements UserDetails, UserGetInfo {
     @Override
     public String getUsername() {
         return this.getEmail();
-    }
-
-    public int getFailedAttempts() {
-        return failedAttempts;
     }
 
     @Override

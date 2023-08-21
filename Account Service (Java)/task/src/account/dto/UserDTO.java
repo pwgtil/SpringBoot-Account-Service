@@ -5,12 +5,16 @@ import account.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@Getter
+@NoArgsConstructor
 public class UserDTO {
 
     /*
@@ -56,39 +60,18 @@ public class UserDTO {
         this.id = id;
         this.name = name;
         this.lastname = lastname;
-        this.email = email;
+        this.email = email.toLowerCase();
         this.password = password;
-        this.roles = roles.stream().sorted().collect(Collectors.toCollection(LinkedHashSet::new));
-    }
-
-    public UserDTO() {
+        this.roles = roles.stream()
+                .sorted()
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     /*
-     * Getters, Setters, Convertors
+     * Converter, Setters
      * */
     public User convertDTOToUser() {
         return new User(this.getName(), this.getLastname(), this.getEmail().toLowerCase(), this.getPassword());
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getLastname() {
-        return lastname;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public Set<String> getRoles() {
-        return roles;
     }
 
     public void setPassword(String password) {

@@ -121,11 +121,15 @@ public class UserService implements UserDetailsService, UserServiceGetInfo, User
     }
 
     public List<UserDTO> getAllUsers() {
-        List<UserDTO> userList = new ArrayList<>();
-        for (User user : userRepository.findAll()) {
-            userList.add(UserDTO.convertUserToDTO(user));
-        }
-        return userList.stream().toList();
+        return userRepository.findAll()
+                .stream()
+                .map(UserDTO::convertUserToDTO)
+                .toList();
+//        List<UserDTO> userList = new ArrayList<>();
+//        for (User user : userRepository.findAll()) {
+//            userList.add(UserDTO.convertUserToDTO(user));
+//        }
+//        return userList.stream().toList();
     }
 
     public void deleteUser(String email) {

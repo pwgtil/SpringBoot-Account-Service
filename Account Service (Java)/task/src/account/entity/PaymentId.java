@@ -1,25 +1,20 @@
 package account.entity;
 
 import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.Objects;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class PaymentId implements Serializable {
-
 
     private String employee;
 
     @Column(name = "period")
     private String period;
-
-    public PaymentId() {
-    }
-
-    public PaymentId(String employee, String period) {
-        this.employee = employee;
-        this.period = period;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -33,5 +28,4 @@ public class PaymentId implements Serializable {
     public int hashCode() {
         return Objects.hash(employee, period);
     }
-
 }

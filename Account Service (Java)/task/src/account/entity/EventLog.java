@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class EventLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +37,8 @@ public class EventLog {
     private String path; // api called
 
 
-    public EventLog(LocalDateTime date, ActionType action, String subject, String object, String path) {
+    public EventLog(Long id, LocalDateTime date, ActionType action, String subject, String object, String path) {
+        this.id = id;
         this.date = date;
         this.action = action;
         this.subject = subject;

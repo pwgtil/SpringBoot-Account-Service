@@ -23,13 +23,6 @@ public class EventLogService implements EventLogServicePostEvent, EventLogServic
     @Override
     public void postEvent(@NotEmpty ActionType action, @NotEmpty String subject, @NotEmpty String object, String path) {
 
-
-        EventLog eventLog = new EventLog();
-
-        eventLog.setDate(LocalDateTime.now());
-        eventLog.setAction(action);
-        eventLog.setSubject(subject);
-
         if (path == null || path.isEmpty()) {
             path = ServletUriComponentsBuilder.fromCurrentRequest().toUriString()
                     .substring(ServletUriComponentsBuilder.fromCurrentServletMapping().toUriString().length());
@@ -37,17 +30,20 @@ public class EventLogService implements EventLogServicePostEvent, EventLogServic
                 object = path;
             }
         }
-        eventLog.setObject(object);
-        eventLog.setPath(path);
+
+        EventLog eventLog = EventLog.builder()
+                .date(LocalDateTime.now())
+                .action(action)
+                .subject(subject)
+                .object(object)
+                .path(path)
+                .build();
+
         eventLogRepository.save(eventLog);
     }
 
     @Override
     public List<EventLog> getAllEvents() {
-        List<EventLog> eventLogs = new ArrayList<>();
-        for (EventLog event : eventLogRepository.findAll()) {
-            eventLogs.add(event);
-        }
-        return eventLogs;
+        return eventLogRepository.findAll();
     }
 }

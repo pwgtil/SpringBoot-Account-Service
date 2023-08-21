@@ -1,10 +1,14 @@
 package account.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Set;
 
 @Entity
+@Getter
+@NoArgsConstructor
 @Table(name = "principle_groups")
 public class Group {
     /*
@@ -26,15 +30,4 @@ public class Group {
     public Group(String code) {
         this.code = code;
     }
-
-    public Group() {
-    }
-
-    /*
-     * Getters Setters
-     * */
-    public String getCode() {
-        return code;
-    }
-
 }

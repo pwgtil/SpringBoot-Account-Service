@@ -2,9 +2,15 @@ package account.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "payments")
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @IdClass(PaymentId.class)
 public class Payment {
 
@@ -21,34 +27,6 @@ public class Payment {
 
     @Column
     private Long salary;
-
-
-    /*
-     * Constructor
-     * */
-    public Payment() {
-    }
-
-    public Payment(String employee, String period, Long salary) {
-        this.employee = employee;
-        this.period = period;
-        this.salary = salary;
-    }
-
-    /*
-     * Getters
-     * */
-    public String getEmployee() {
-        return employee;
-    }
-
-    public String getPeriod() {
-        return period;
-    }
-
-    public Long getSalary() {
-        return salary;
-    }
 
     @Override
     public String toString() {
